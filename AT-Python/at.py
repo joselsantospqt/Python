@@ -5,13 +5,6 @@ from bs4 import BeautifulSoup
 
 usuario = []
 
-pygame.init()
-
-fonte = pygame.font.Font(pygame.font.get_default_font(), 36)
-
-FUNDO = (0, 0, 0)
-TEXTO = (255, 255, 255)
-
 class Contexto():
     terminou = False
     tela = None
@@ -22,6 +15,7 @@ class Contexto():
     posicao = 0
 
     HTML = ''
+
 class Pessoa():
     nome = ''
     foto = ''
@@ -58,17 +52,17 @@ def CarregaDados():
        pessoa.notas = notas_perfil_usuario.text
 
     for itens in content_el.find_all('a', class_='link-gray no-underline no-wrap'):
-        obj = {}
+        sets_ = {}
         s = itens.text.replace('\n', '')
         result = ''.join([i for i in s if not i.isdigit()])
         if len(result) <= 0:
-          obj['titulo'] = 'Star'
+          sets_['titulo'] = 'Star'
         else:
-          obj['titulo'] = result.strip()
+          sets_['titulo'] = result.strip()
 
         item_valor = itens.find('span', class_='text-bold text-gray-dark')
-        obj['valor'] = (int(item_valor.text))
-        array.append(obj)
+        sets_['valor'] = (int(item_valor.text))
+        array.append(sets_)
 
 
     pessoa.status = array
@@ -88,20 +82,19 @@ def CarregaRepositorio(nome):
     content_el = soup.find('div', {'id': 'user-repositories-list'})
 
     for itens in content_el.find_all('li', class_='col-12 d-flex width-full py-4 border-bottom color-border-secondary public source'):
-        obj = {}
+        sets_ = {}
         titulo_repositorio = itens.find('h3', class_='wb-break-all')
         "print(titulo_repositorio)"
-        obj['titulo'] = titulo_repositorio.text.strip().replace('\n', '')
+        sets_['titulo'] = titulo_repositorio.text.strip().replace('\n', '')
 
         descriacao_repositorio = itens.find('p', class_='col-9 d-inline-block text-gray mb-2 pr-4')
         "print(descriacao_repositorio)"
         if descriacao_repositorio:
-            obj['subtitulo'] = descriacao_repositorio.text.strip().replace('\n', '')
+            sets_['subtitulo'] = descriacao_repositorio.text.strip().replace('\n', '')
         else:
-            obj['subtitulo'] = 'Não existe Descrição'
+            sets_['subtitulo'] = 'Não existe Descrição'
 
-        repositorios.append(obj)
-
+        repositorios.append(sets_)
     usuario.append(repositorios)
 
 def GerarRelatorio(nome):
@@ -133,13 +126,13 @@ def rodape(contexto):
 
 def corpo(contexto):
 
-    ## exibir o titulo do ultimo nerdcast
-    tela = contexto.tela
-    texto_surface = fonte.render(str(contexto.uso_cpu), True, TEXTO)
-    tela.blit(texto_surface, dest=(100, 50))
 
+    tela = contexto.tela
+    texto_surface = fonte.render(usuario[0].nome, True, TEXTO)
+    tela.blit(texto_surface, dest=(100, 50))
+    '''
     titulo_surface = fonte.render(str(contexto.titulo), True, TEXTO)
-    tela.blit(titulo_surface, dest=(100, 100))
+    tela.blit(titulo_surface, dest=(100, 100))'''
 
 def main():
     contexto = Contexto()
@@ -153,7 +146,6 @@ def main():
         pygame.display.update()
         tela.fill(FUNDO)
 
-        CarregaDados()
         montar_tela(contexto)
 
         # Checar os eventos do mouse aqui:
@@ -197,4 +189,13 @@ def main():
 
 
 if __name__ == '__main__':
+
+    pygame.init()
+    CarregaDados()
+    
+    fonte = pygame.font.Font(pygame.font.get_default_font(), 36)
+
+    FUNDO = (0, 0, 0)
+    TEXTO = (255, 255, 255)
+
     main()

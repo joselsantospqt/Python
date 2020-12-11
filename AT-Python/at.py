@@ -151,7 +151,7 @@ def gerarRelatorio(usuario):
     relatorio = []
     sets_ = {}
 
-    sets_['titulo'] = "Olá " + usuario[0].nome + " Aqui está seu relátorio"
+    sets_['titulo'] = "Olá " + usuario[0].nome + " Aqui está seu relatório"
     sets_['nome'] = usuario[0].nome
     sets_['nick'] = usuario[0].nick
     sets_['notas'] = usuario[0].notas
@@ -283,6 +283,9 @@ def main():
                     if contexto.posicao < total:
                         contexto.posicao += 1
 
+                if press[pygame.K_ESCAPE]:
+                    contexto.terminou = True
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if botao_pesquisar.isOver(pos):
                     capturou = True
@@ -296,7 +299,7 @@ def main():
                     botao_pesquisar.text = 'CARREGANDO'
                 else:
                     botao_pesquisar.color = BRANCO
-                    botao_pesquisar.text = 'CLIQUE AQUI'
+                    botao_pesquisar.text = 'BUSCAR PERFIL'
 
                 if botao_relatorio.isOver(pos):
                     botao_relatorio.color = COR1
@@ -338,8 +341,6 @@ if __name__ == '__main__':
     fonteMenor = pygame.font.Font("C:\Windows\Fonts\Calibri.ttf", 17)
     pygame.display.set_caption("AT Ezekiel GIT-HUB")
     pygame.display.set_icon(img)
-
-
 
     clicked = False
     BRANCO = (255,255,255)

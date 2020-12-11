@@ -3,9 +3,7 @@ import pygame
 import io
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
-from pygame.locals import *
-
-
+import re
 
 class Contexto():
     terminou = False
@@ -29,7 +27,7 @@ class Pessoa():
     notas = ''
 
 
-class button():
+class Button():
     def __init__(self, color, x, y, width, height, text=''):
         self.color = color
         self.x = x
@@ -46,10 +44,10 @@ class button():
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height), 0)
 
         if self.text != '':
-            font = pygame.font.Font("C:\Windows\Fonts\Arial.ttf", 10)
+            font = pygame.font.Font("C:\\Windows\\Fonts\\Arial.ttf", 10)
             text = font.render(self.text, 1, (0, 0, 0))
-            win.blit(text, (
-            self.x + (self.width / 2 - text.get_width() / 2), self.y + (self.height / 2 - text.get_height() / 2)))
+            win.blit(text, (self.x + (self.width / 2 - text.get_width() / 2),
+                            self.y + (self.height / 2 - text.get_height() / 2)))
 
     def isOver(self, pos):
         # Pos is the mouse position or a tuple of (x,y) coordinates
@@ -61,7 +59,12 @@ class button():
 
 
 def carregaDados(contexto):
-    nome = contexto.git_name
+
+    if len(contexto.git_name) <= 0:
+        nome = 'not_found'
+    else:
+        nome = contexto.git_name
+
     response = requests.get('https://github.com/' + nome)
 
     if response.status_code == 200:
@@ -69,8 +72,8 @@ def carregaDados(contexto):
         dados = response.text
         pessoa = Pessoa()
 
-
         soup = BeautifulSoup(dados, 'html.parser')
+
         print('Carregando ->', soup.title.text)
 
         content_el = soup.find('main', {'id': 'js-pjax-container'})
@@ -112,7 +115,7 @@ def carregaRepositorio(contexto):
 
         content_el = soup.find('div', {'id': 'user-repositories-list'})
 
-        total_itens = content_el.find_all('li', class_='col-12 d-flex width-full py-4 border-bottom color-border-secondary public source')
+        total_itens = content_el.find_all('li')
         contexto.total_repositorios = len(total_itens)
 
         for itens in total_itens:
@@ -128,11 +131,18 @@ def carregaRepositorio(contexto):
             else:
                 sets_['subtitulo'] = 'Não existe Descrição'
 
-            star_repositorio = itens.find('a', class_='muted-link mr-3')
-            if star_repositorio:
-                sets_['star'] = int(star_repositorio.text.strip().replace('\n', ''))
-            else:
-                sets_['star'] = 0
+            # Sei que existe forma melhor de se fazer isso
+            try:
+                star_repositorio = itens.find('a', class_='muted-link mr-3')
+                if star_repositorio is not None:
+                    sets_['star'] = int(star_repositorio.text.strip().replace('\n', ''))
+                else:
+                    sets_['star'] = 0
+            except:
+                a = star_repositorio
+                a = str(a)
+                b = re.sub('[^0-9]', '', a)
+                sets_['star'] = b[-4::]
 
             repositorios.append(sets_)
         usuario.append(repositorios)
@@ -185,7 +195,7 @@ def corpo(contexto):
     color = pygame.Color('lightskyblue3')
     tela = contexto.tela
 
-    botao_pesquisar.draw(tela, (0,0,0))
+    botao_pesquisar.draw(tela, (0, 0, 0))
     pygame.draw.rect(tela, color, input_rect, 2)
 
     texto_surface = fonte.render(contexto.git_name, True, TEXTO)
@@ -220,7 +230,7 @@ def montaDados(contexto):
             texto_surface = fonteMenor.render('Repositorio: ' + str(usuario[1][contexto.posicao]['titulo']), True, COR4)
             tela.blit(texto_surface, dest=(300, 270))
 
-            texto_surface = fonteMenor.render('Descrição: ' + str(usuario[1][contexto.posicao]['subtitulo']), True, COR4)
+            texto_surface = fonteMenor.render('Descrição:' + str(usuario[1][contexto.posicao]['subtitulo']), True, COR4)
             tela.blit(texto_surface, dest=(300, 290))
 
             texto_surface = fonteMenor.render('Stars: ' + str(usuario[1][contexto.posicao]['star']), True, COR4)
@@ -306,7 +316,6 @@ def main():
                 else:
                     botao_relatorio.color = BRANCO
 
-
             if event.type == pygame.QUIT:
                 contexto.terminou = True
 
@@ -337,13 +346,13 @@ if __name__ == '__main__':
     pygame.init()
 
     img = pygame.image.load('imagens/icon.png')
-    fonte = pygame.font.Font("C:\Windows\Fonts\Arial.ttf", 32)
-    fonteMenor = pygame.font.Font("C:\Windows\Fonts\Calibri.ttf", 17)
+    fonte = pygame.font.Font('C:\\Windows\\Fonts\\Arial.ttf', 32)
+    fonteMenor = pygame.font.Font('C:\\Windows\\Fonts\\Calibri.ttf', 17)
     pygame.display.set_caption("AT Ezekiel GIT-HUB")
     pygame.display.set_icon(img)
 
     clicked = False
-    BRANCO = (255,255,255)
+    BRANCO = (255, 255, 255)
     FUNDO = (0, 0, 0)
     TEXTO = (255, 255, 255)
     COR1 = (255, 0, 0)
@@ -351,9 +360,8 @@ if __name__ == '__main__':
     COR3 = (46, 255, 0)
     COR4 = (244, 67, 54)
 
-    botao_pesquisar = button(BRANCO, 210,90,180,40, 'CLIQUE AQUI')
+    botao_pesquisar = Button(BRANCO, 210, 90, 180, 40, 'CLIQUE AQUI')
 
-    botao_relatorio = button(BRANCO, 300, 380, 180, 40, 'GERAR RELATORIO')
-
+    botao_relatorio = Button(BRANCO, 300, 380, 180, 40, 'GERAR RELATORIO')
 
     main()

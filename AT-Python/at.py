@@ -161,7 +161,7 @@ def gerarRelatorio(usuario):
     relatorio = []
     sets_ = {}
 
-    sets_['titulo'] = "Olá " + usuario[0].nome + " Aqui está seu relatório"
+    sets_['titulo'] = usuario[0].nome
     sets_['nome'] = usuario[0].nome
     sets_['nick'] = usuario[0].nick
     sets_['notas'] = usuario[0].notas

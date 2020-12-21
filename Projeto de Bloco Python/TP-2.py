@@ -1,14 +1,10 @@
-import pygame, sys, platform, psutil
-import pygame.display
+import pygame, platform, psutil
 
 class Contexto():
     terminou = False
     tela = None
     largura_tela = 800
     altura_tela = 600
-    posicao = 0
-    HTML = ''
-    carregou = False
     loop = 0
 
 
@@ -19,16 +15,17 @@ def corpo(contexto):
     mem = psutil.virtual_memory()
     cpu = psutil.cpu_percent(interval=0)
     disco = psutil.disk_usage('.')
+    ip = psutil.net_connections()
 
 
     #AQUI É MONTADO A UTILIZAÇÃO DAS MEMORIAS
     mem = psutil.virtual_memory()
-    larg = contexto.largura_tela - 2 * 20
+    largura = contexto.largura_tela - 2 * 20
     s1.fill(FUNDO)
-    pygame.draw.rect(s1, COR1, (20, 50, larg, 70))
+    pygame.draw.rect(s1, COR1, (20, 50, largura, 70))
     contexto.tela.blit(s1, (0, 0))
-    larg = larg * mem.percent / 100
-    pygame.draw.rect(s1, COR2, (20, 50, larg, 70))
+    largura = largura * mem.percent / 100
+    pygame.draw.rect(s1, COR2, (20, 50, largura, 70))
     contexto.tela.blit(s1, (0, 0))
     total = round(mem.total / (1024 * 1024 * 1024), 2)
     texto_barra = "Uso de Memória (Total: " + str(total) + "GB) (Utilizando: " + str(mem.percent) + " %):"
@@ -62,6 +59,20 @@ def corpo(contexto):
     text = fonte.render(texto_barra, 1, COR3)
     contexto.tela.blit(text, (20, (2 * contexto.altura_tela / 4)))
 
+  # AQUI É MONTADO A UTILIZAÇÃO DO IP
+    largura = contexto.largura_tela - 2 * 20
+    s4.fill(FUNDO)
+    contexto.tela.blit(s4, (0, 3 * contexto.altura_tela / 4))
+    texto_1 = "IPv4 and IPv6"
+    texto_2 = ""
+    c = ip[0]
+    b = c.laddr.ip
+    texto_2 = b
+    text1 = fonte.render(texto_1, 1, COR3)
+    text2 = fonte.render(texto_2, 1, COR2)
+    contexto.tela.blit(text1, (20, (3 * contexto.altura_tela / 4)))
+    contexto.tela.blit(text2, (20,  (3 * contexto.altura_tela / 4) + 30))
+
 
 
 
@@ -70,9 +81,6 @@ def montar_tela(contexto):
 
 
 def main():
-    input_text = ''
-    capturou = False
-    gerou_relatorio = False
     contexto = Contexto()
     tela = pygame.display.set_mode((contexto.largura_tela, contexto.altura_tela))
     clock = pygame.time.Clock()
@@ -88,7 +96,6 @@ def main():
 
         # Checar os eventos do mouse aqui:
         for event in pygame.event.get():
-            pos = pygame.mouse.get_pos()
             if event.type == pygame.KEYDOWN:
                 press = pygame.key.get_pressed()
 
@@ -116,7 +123,6 @@ if __name__ == '__main__':
     fonteMenor = pygame.font.Font('C:\\Windows\\Fonts\\Calibri.ttf', 17)
     pygame.display.set_caption("Gerenciador de tarefas.")
 
-    clicked = False
     BRANCO = (255, 255, 255)
     FUNDO = (0, 0, 0)
     TEXTO = (255, 255, 255)
@@ -125,7 +131,7 @@ if __name__ == '__main__':
     COR3 = (46, 255, 0)
     COR4 = (244, 67, 54)
 
-    #AQUI É MONTADO A UTILIZAÇÃO DAS MEMORIAS
+
     s1 = pygame.surface.Surface((800, 600 / 4))
     s2 = pygame.surface.Surface((800, 600 / 4))
     s3 = pygame.surface.Surface((800, 600 / 4))

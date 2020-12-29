@@ -1,0 +1,14 @@
+1° - Instalar o Thonny
+https://thonny.org/
+
+2° - Selecionar o interpretador e criar sua pasta
+
+3° - Instalar o virtualenv
+https://www.liquidweb.com/kb/how-to-setup-a-python-virtual-environment-on-windows-10/
+
+4° - Selecionar o ambiente e ativar
+4.1° - cd [nome do ambiente]/scripts
+4.2° - activade ,(ctrl + c) pra parar
+
+5° pip install dash==1.18.1
+https://dash.plotly.com/installation

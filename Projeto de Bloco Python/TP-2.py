@@ -3,8 +3,8 @@ import pygame, platform, psutil
 class Contexto():
     terminou = False
     tela = None
-    largura_tela = 800
-    altura_tela = 600
+    largura_tela = 1024
+    altura_tela = 900
     loop = 0
 
 
@@ -19,7 +19,6 @@ def corpo(contexto):
 
 
     #AQUI É MONTADO A UTILIZAÇÃO DAS MEMORIAS
-    mem = psutil.virtual_memory()
     largura = contexto.largura_tela - 2 * 20
     s1.fill(FUNDO)
     pygame.draw.rect(s1, COR1, (20, 50, largura, 70))

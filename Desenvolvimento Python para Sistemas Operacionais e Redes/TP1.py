@@ -1,7 +1,11 @@
 import os
 import datetime
 import psutil
+import subprocess
+import time
 
+
+'teste'
 
 def rodar(func):
     if __name__ == '__main__':
@@ -76,32 +80,64 @@ def questao10():
     "A diferença está nos primeiro e último argumentos de os.spawnv."
     "O primeiro argumento indica que é para esperar o processo terminar"
     " antes de retornar ao processo que criou."
-@rodar
+
 def questao11():
- 
+    print(subprocess.run(["notepad", "texto.txt"]))
+
 def questao12():
-    print('teste')
+    subprocess.run(["notepad"])
+    print('SubProcess - NotedPad')
+
+    os.system("notepad")
+    print("OS - NotedPad")
+
 
 def questao13():
-    print('teste')
+    p = subprocess.Popen(["notepad", "arq_texto.txt"])
+    print("PID do processo criado:", p.pid)
+
 
 def questao14():
-    print('teste')
+    '''A função psutil.process_iter() é equivalente a psutil.pids().
+       Ela retorna a lista de processos que estão executando na máquina.
+       A diferença está na forma como é implementada, de modo que seja
+       mais eficiente quando executado repetidamente (em iterações).'''
 
 def questao15():
-    print('teste')
+    lista = psutil.pids()
+
+    for pid in lista:
+        if pid > 4:
+            p = psutil.Process(pid)
+            print(f"{p.name()}, {p.create_time()}, {p.memory_info()}")
+
 
 def questao16():
-    print('teste')
+
+    p = psutil
+    def temporizador(p, interval=0.1):
+        for i in range(len(psutil.cpu_times_percent(percpu=True))):
+            print(p.cpu_times(interval))
+    temporizador(p)
 
 def questao17():
-    print('teste')
+    p = psutil
+    for i in range(20):
+        print(psutil.cpu_times_percent(interval=1))
+
 
 def questao18():
-    print('teste')
+    print(f'memoria = {psutil.virtual_memory().total**10}')
+    print(f'swap = {psutil.swap_memory().total**10}')
+
 
 def questao19():
-    print('teste')
+    print(psutil.disk_usage(path='C:').free)
 
+@rodar
 def questao20():
-    print('teste')
+    p = psutil.disk_partitions()
+    print(f'dispositivo = {p[0].device}')
+    print(f'sistema  = {p[0].fstype}')
+    print(f'total de armazenamento = {psutil.disk_usage(path="C:").total}')
+    print(f'armazenamento disponível = {psutil.disk_usage(path="C:").free}')

@@ -4,14 +4,16 @@ import psutil
 import cpuinfo
 import os
 import time
+import sched
+import hashlib
 import subprocess
 
 
 class Contexto:
     terminou = False
     tela = None
-    largura_tela = 1024
-    altura_tela = 900
+    largura_tela = 900
+    altura_tela = 600
     loop = 0
     count = 0
     pagina = 0
@@ -80,19 +82,31 @@ def corpo(contexto):
 
     elif contexto.pagina == 1:
 
+      scheduler = sched.scheduler(time.time, time.sleep)
+
+      def carrega_memoria():
         s = "Memória: " + str(mem.percent) + "%"
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 0))
+        print('ESCALONADAS DA FUNÇÃO - carrega_memoria:', time.ctime())
 
+      def carrega_HD():
         s = "HD: " + str(disco.percent) + "%"
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 20))
+        print('ESCALONADAS DA FUNÇÃO - carrega_HD:', time.ctime())
 
+      def carrega_rede():
         c = ip[0]
         b = c.laddr.ip
         s = "IP: " + str(b)
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 40))
+        print('ESCALONADAS DA FUNÇÃO - carrega_rede:', time.ctime())
+
+      def carrega_dados_cpu():
+
+        print('%s %0.2f %0.2f' % (time.ctime(), time.time(), time.process_time()))
 
         s = "Nome: " + str(p.name())
         text = fonteMenor.render(s, 1, FUNDO)
@@ -123,6 +137,16 @@ def corpo(contexto):
         s = "Uso de memória: " + str(mem) + "MB"
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (350, 60))
+        time.sleep(2)
+
+        print('ESCALONADAS DA FUNÇÃO - carrega_dados_cpu:', time.ctime())
+
+      scheduler.enter(2, 1, carrega_memoria)
+      scheduler.enter(3, 1, carrega_HD)
+      scheduler.enter(4, 1, carrega_rede)
+      scheduler.enter(1, 1, carrega_dados_cpu)
+
+      scheduler.run()
 
     elif contexto.pagina == 2:
         s = "Sistema: " + str(platform.system())

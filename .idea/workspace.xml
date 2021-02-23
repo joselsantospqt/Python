@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="352a9446-68ff-4320-ba51-067ee56d93d4" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes/TP3/TP3_Client_UDP.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes/TP3/TP3_UDP.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Python.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Python.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes/TP1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes/TP1/TP1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes/texto.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes/TP1/texto.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projeto de Bloco Python/.idea/Projeto de Bloco Python.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Projeto de Bloco Python/.idea/Projeto de Bloco Python.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projeto de Bloco Python/TP-5.py" beforeDir="false" afterPath="$PROJECT_DIR$/Projeto de Bloco Python/TP-5.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projeto de Bloco Python/TP-6.py" beforeDir="false" afterPath="$PROJECT_DIR$/Projeto de Bloco Python/TP-6.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="JupyterTrust" id="141f1041-8f35-4927-9581-549884ec5ecc" />
+  <component name="ProjectId" id="1odeLKkz6lq2HrS21CfngZbcmzi" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes" />
+    <property name="restartRequiresConfirmation" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Git\Python\Desenvolvimento Python para Sistemas Operacionais e Redes\TP1" />
+      <recent name="C:\Git\Python\Desenvolvimento Python para Sistemas Operacionais e Redes\TP3" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Git\Python\Desenvolvimento Python para Sistemas Operacionais e Redes" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.TP3_UDP (1)">
+    <configuration name="TP3_Client_UDP" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes/TP3" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes/TP3/TP3_Client_UDP.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TP3_UDP (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes/TP3" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes/TP3/TP3_UDP.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TP3_UDP" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="C:\Git\Python\Desenvolvimento Python para Sistemas Operacionais e Redes\TP3\TP3_UDP.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.TP3_UDP (1)" />
+        <item itemvalue="Python.TP3_Client_UDP" />
+        <item itemvalue="Python.TP3_UDP" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="352a9446-68ff-4320-ba51-067ee56d93d4" name="Default Changelist" comment="" />
+      <created>1613620838794</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1613620838794</updated>
+      <workItem from="1613620839952" duration="703000" />
+      <workItem from="1613944139650" duration="85000" />
+      <workItem from="1613945584179" duration="8965000" />
+      <workItem from="1614041953035" duration="1187000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1876" height="287" key="GridCell.Tab.0.bottom" timestamp="1614049219701">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1876" height="287" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1614049219701" />
+    <state width="1876" height="287" key="GridCell.Tab.0.center" timestamp="1614049219701">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1876" height="287" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1614049219701" />
+    <state width="1876" height="287" key="GridCell.Tab.0.left" timestamp="1614049219701">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1876" height="287" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1614049219701" />
+    <state width="1876" height="287" key="GridCell.Tab.0.right" timestamp="1614049219701">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1876" height="287" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1614049219701" />
+    <state width="1876" height="354" key="GridCell.Tab.1.bottom" timestamp="1613959265917">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1876" height="354" key="GridCell.Tab.1.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1613959265917" />
+    <state width="1876" height="354" key="GridCell.Tab.1.center" timestamp="1613959265917">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1876" height="354" key="GridCell.Tab.1.center/0.0.1920.1080@0.0.1920.1080" timestamp="1613959265917" />
+    <state width="1876" height="354" key="GridCell.Tab.1.left" timestamp="1613959265917">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1876" height="354" key="GridCell.Tab.1.left/0.0.1920.1080@0.0.1920.1080" timestamp="1613959265917" />
+    <state width="1876" height="354" key="GridCell.Tab.1.right" timestamp="1613959265917">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1876" height="354" key="GridCell.Tab.1.right/0.0.1920.1080@0.0.1920.1080" timestamp="1613959265917" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Python$TP3_Client_UDP.coverage" NAME="TP3_Client_UDP Coverage Results" MODIFIED="1614042149097" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes/TP3" />
+    <SUITE FILE_PATH="coverage/Python$TP3.coverage" NAME="TP3 Coverage Results" MODIFIED="1613948914465" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes" />
+    <SUITE FILE_PATH="coverage/Python$TP3_UDP__1_.coverage" NAME="TP3_UDP (1) Coverage Results" MODIFIED="1614042467937" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Desenvolvimento Python para Sistemas Operacionais e Redes/TP3" />
+  </component>
+</project>

@@ -300,7 +300,7 @@ if __name__ == '__main__':
 
     fonte = pygame.font.Font('C:\\Windows\\Fonts\\Arial.ttf', 28)
     fonteMenor = pygame.font.Font('C:\\Windows\\Fonts\\Calibri.ttf', 17)
-    pygame.display.set_caption("Gerenciador de tarefas TP-4.")
+    pygame.display.set_caption("Gerenciador de tarefas TP-5.")
 
     BRANCO = (255, 255, 255)
     FUNDO = (0, 0, 0)

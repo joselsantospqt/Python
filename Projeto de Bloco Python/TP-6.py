@@ -128,12 +128,12 @@ def corpo(contexto):
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (350, 20))
 
-        perc_mem = '{:.2f}'.format(p.memory_percent())
+        perc_mem = '{:6.2f}'.format(psutil.cpu_percent())
         s = "Percentual de uso de CPU: " + str(perc_mem) + "%"
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (350, 40))
 
-        mem = '{:.2f}'.format(p.memory_info().rss / 1024 / 1024)
+        mem = '{:6.2f}'.format(psutil.virtual_memory().percent)
         s = "Uso de memória: " + str(mem) + "MB"
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (350, 60))
@@ -142,7 +142,7 @@ def corpo(contexto):
         print('ESCALONADAS DA FUNÇÃO - carrega_dados_cpu:', time.ctime())
 
       scheduler.enter(2, 1, carrega_memoria)
-      scheduler.enter(3, 1, carrega_HD)
+      scheduler.enter(1, 1, carrega_HD)
       scheduler.enter(4, 1, carrega_rede)
       scheduler.enter(1, 1, carrega_dados_cpu)
 

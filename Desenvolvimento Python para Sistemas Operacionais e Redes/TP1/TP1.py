@@ -5,8 +5,6 @@ import subprocess
 import time
 
 
-'teste'
-
 def rodar(func):
     if __name__ == '__main__':
         print('-' * 10, func.__name__, '-' * 10)
@@ -55,7 +53,7 @@ def questao7():
     arquivo = "C:\\Users\\José Ricardo\\Documents\Python\\Desenvolvimento Python para Sistemas Operacionais e Redes\\texto.txt"
     print(os.path.dirname((arquivo)))
 
-
+@rodar
 def questao8():
     lista = os.listdir()
     caminho_Absoluto = os.getcwd() + "\\"
@@ -127,14 +125,14 @@ def questao17():
 
 
 def questao18():
-    print(f'memoria = {psutil.virtual_memory().total**10}')
-    print(f'swap = {psutil.swap_memory().total**10}')
+    print(f'memoria = {str(psutil.virtual_memory().total**10)[:2]} GB')
+    print(f'swap = {str(psutil.swap_memory().total**10)[:2]} GB')
 
 
 def questao19():
     print(psutil.disk_usage(path='C:').free)
 
-@rodar
+
 def questao20():
     p = psutil.disk_partitions()
     print(f'dispositivo = {p[0].device}')

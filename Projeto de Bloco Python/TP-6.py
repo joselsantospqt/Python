@@ -5,15 +5,17 @@ import cpuinfo
 import os
 import time
 import sched
+import nmap
 import hashlib
 import subprocess
+import socket
 
 
 class Contexto:
     terminou = False
     tela = None
-    largura_tela = 900
-    altura_tela = 600
+    largura_tela = 1024
+    altura_tela = 900
     loop = 0
     count = 0
     pagina = 0
@@ -25,7 +27,7 @@ def corpo(contexto):
     mem = psutil.virtual_memory()
     cpu = psutil.cpu_percent(interval=0)
     disco = psutil.disk_usage('.')
-    ip = psutil.net_connections()
+    ip = socket.gethostbyname(socket.gethostname())
     p = psutil.Process(pid)
 
     # AQUI É MONTADO O FUNDO DOS DADOS DO CPU
@@ -97,9 +99,7 @@ def corpo(contexto):
         print('ESCALONADAS DA FUNÇÃO - carrega_HD:', time.ctime())
 
       def carrega_rede():
-        c = ip[0]
-        b = c.laddr.ip
-        s = "IP: " + str(b)
+        s = "IP: " + str(ip)
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 40))
         print('ESCALONADAS DA FUNÇÃO - carrega_rede:', time.ctime())
@@ -112,11 +112,11 @@ def corpo(contexto):
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 60))
 
-        s = "Executável: " + str(p.exe())
+        s = "Tempo de usuário: " + str(p.cpu_times().user)
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 80))
 
-        s = "Tempo de usuário: " + str(p.cpu_times().user)
+        s = "Executável: " + str(p.exe())
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 100))
 
@@ -143,8 +143,9 @@ def corpo(contexto):
 
       scheduler.enter(2, 1, carrega_memoria)
       scheduler.enter(1, 1, carrega_HD)
-      scheduler.enter(4, 1, carrega_rede)
-      scheduler.enter(1, 1, carrega_dados_cpu)
+      scheduler.enter(1, 1, carrega_rede)
+      scheduler.enter(4, 1, carrega_dados_cpu)
+      time.sleep(2)
 
       scheduler.run()
 
@@ -189,34 +190,34 @@ def corpo(contexto):
             text = fonteMenor.render(titulo, 1, BRANCO)
             contexto.tela.blit(text, (5, 160))
 
-            marge = 160
+            margin = 160
             for i in lista_arq:
-                marge+= 20
+                margin+= 20
                 nome_arquivo = i
                 text = fonteMenor.render(nome_arquivo, 1, BRANCO)
-                contexto.tela.blit(text, (5, marge))
+                contexto.tela.blit(text, (5, margin))
 
             # AQUI EU CRIO AS COLUNAS
-            marge += 50
+            margin += 50
             titulo = "Nome do Arquivo: "
             text = fonteMenor.render(titulo, 1, BRANCO)
-            contexto.tela.blit(text, (5, marge))
+            contexto.tela.blit(text, (5, margin))
 
             titulo = "Tamanho: "
             text = fonteMenor.render(titulo, 1, BRANCO)
-            contexto.tela.blit(text, (150, marge))
+            contexto.tela.blit(text, (150, margin))
 
             titulo = "Tempo de criação: "
             text = fonteMenor.render(titulo, 1, BRANCO)
-            contexto.tela.blit(text, (250, marge))
+            contexto.tela.blit(text, (250, margin))
 
             titulo = "Tempo de modificação: "
             text = fonteMenor.render(titulo, 1, BRANCO)
-            contexto.tela.blit(text, (490, marge))
+            contexto.tela.blit(text, (490, margin))
 
             # AQUI FORMATO E PREENCHO VÁRIAVEIS ANTES DE EXIBIR NA TELA
             for i in dic:
-                marge += 20
+                margin += 20
                 nome = fonteMenor.render(i, 1, BRANCO)
                 kb = (dic[i][0] / 1000)
                 formataTamanho = '{:10}'.format(str('{:.2f}'.format(kb) + ' KB'))
@@ -224,22 +225,22 @@ def corpo(contexto):
                 criacao = fonteMenor.render(str(time.ctime(dic[i][1])), 1, BRANCO)
                 modificacao = fonteMenor.render(str(time.ctime(dic[i][2])), 1, BRANCO)
 
-                contexto.tela.blit(nome, (5, marge))
-                contexto.tela.blit(tamanho, (150, marge))
-                contexto.tela.blit(criacao, (250, marge))
-                contexto.tela.blit(modificacao, (490, marge))
+                contexto.tela.blit(nome, (5, margin))
+                contexto.tela.blit(tamanho, (150, margin))
+                contexto.tela.blit(criacao, (250, margin))
+                contexto.tela.blit(modificacao, (490, margin))
 
         if len(lista_dir) > 0:
             titulo = "Diretórios: "
             text = fonteMenor.render(titulo, 1, BRANCO)
             contexto.tela.blit(text, (150, 160))
 
-            marge = 160
+            margin = 160
             for i in lista_dir:
-                marge += 20
+                margin += 20
                 nome_pasta = i
                 text = fonteMenor.render(nome_pasta, 1, BRANCO)
-                contexto.tela.blit(text, (150, marge))
+                contexto.tela.blit(text, (150, margin))
 
 
     # AQUI É MONTADO A UTILIZAÇÃO DAS MEMORIAS

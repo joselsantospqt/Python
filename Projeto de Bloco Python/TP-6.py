@@ -9,6 +9,7 @@ import nmap
 import hashlib
 import subprocess
 import socket
+import nmap
 
 
 class Contexto:
@@ -20,6 +21,21 @@ class Contexto:
     count = 0
     pagina = 0
 
+def retorna_codigo_ping(hostname):
+        """Usa o utilitario ping do sistema operacional para encontrar   o host. ('-c 5') indica, em sistemas linux, que deve mandar 5   pacotes. ('-W 3') indica, em sistemas linux, que deve esperar 3   milisegundos por uma resposta. Esta funcao retorna o codigo de   resposta do ping """
+
+        plataforma = platform.system()
+        args = []
+        if plataforma == "Windows":
+            args = ["ping", "-n", "1", "-l", "1", "-w", "100", hostname]
+
+        else:
+            args = ['ping', '-c', '1', '-W', '1', hostname]
+
+        ret_cod = subprocess.call(args,
+                                  stdout=open(os.devnull, 'w'),
+                                  stderr=open(os.devnull, 'w'))
+        return ret_cod
 
 def corpo(contexto):
 
@@ -27,8 +43,8 @@ def corpo(contexto):
     mem = psutil.virtual_memory()
     cpu = psutil.cpu_percent(interval=0)
     disco = psutil.disk_usage('.')
-    ip = socket.gethostbyname(socket.gethostname())
     p = psutil.Process(pid)
+
 
     # AQUI É MONTADO O FUNDO DOS DADOS DO CPU
     s1.fill(BRANCO)
@@ -150,6 +166,7 @@ def corpo(contexto):
       scheduler.run()
 
     elif contexto.pagina == 2:
+
         s = "Sistema: " + str(platform.system())
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 0))
@@ -165,6 +182,14 @@ def corpo(contexto):
         s = "Maquina: " + str(platform.machine())
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 60))
+
+        s = "IP: " + ipv4
+        text = fonteMenor.render(s, 1, FUNDO)
+        contexto.tela.blit(text, (350, 0))
+
+        s = "MAC: " + mac
+        text = fonteMenor.render(s, 1, FUNDO)
+        contexto.tela.blit(text, (350, 20))
 
 
         # AQUI CARREGO OS ARQUIVOS DO DIRETORIO
@@ -245,10 +270,8 @@ def corpo(contexto):
 
     # AQUI É MONTADO A UTILIZAÇÃO DAS MEMORIAS
 
-
 def montar_tela(contexto):
     corpo(contexto)
-
 
 def main():
     contexto = Contexto()
@@ -292,12 +315,39 @@ def main():
     # Finaliza o pygame
     pygame.quit()
 
-
 if __name__ == '__main__':
-
+    print("\nIniciando Pygame ...")
     pygame.init()
+
+    print("\nIniciando Informações CPU ...")
     info_cpu = cpuinfo.get_cpu_info()
     pid = os.getpid()
+    ip = socket.gethostbyname(socket.gethostname())
+
+    print("\nIniciando Scanner de Rede ...")
+    return_codes = dict()
+    host_validos = []
+
+    ip_lista = ip.split('.')
+    base_ip = ".".join(ip_lista[0:3]) + '.'
+
+    return_codes[base_ip + '{0}'.format(1)] = retorna_codigo_ping(base_ip + '{0}'.format(1))
+
+    if return_codes[base_ip + '{0}'.format(1)] == 0:
+        host_validos.append(base_ip + '{0}'.format(1))
+
+    vScannner = nmap.PortScanner()
+    for i in host_validos:
+        try:
+            vScannner.scan(i)
+            ipv4 = vScannner[i]['addresses']['ipv4']
+            mac = vScannner[i]['addresses']['mac']
+        except:
+            pass
+
+
+
+    print("\nConcluido ! ")
 
     fonte = pygame.font.Font('C:\\Windows\\Fonts\\Arial.ttf', 28)
     fonteMenor = pygame.font.Font('C:\\Windows\\Fonts\\Calibri.ttf', 17)
@@ -312,9 +362,8 @@ if __name__ == '__main__':
     COR4 = (244, 67, 54)
 
     s1 = pygame.surface.Surface((1024, 600 / 4))
-    s2 = pygame.surface.Surface((800, 600 / 4))
-    s3 = pygame.surface.Surface((800, 600 / 4))
-    s4 = pygame.surface.Surface((800, 600 / 4))
-    sTelaLonga = pygame.surface.Surface((800, 600))
+    s2 = pygame.surface.Surface((1024, 600 / 4))
+    s3 = pygame.surface.Surface((1024, 600 / 4))
+    s4 = pygame.surface.Surface((1024, 600 / 4))
 
     main()

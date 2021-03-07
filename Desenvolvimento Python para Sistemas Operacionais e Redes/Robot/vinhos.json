@@ -1,5 +1,5 @@
-{
-  "0":{
+[
+  {
   "nome": "Pedro Carvalho Branco",
   "produtor": "Pedro Carvalho (Casa Santa Eufémia)",
   "alcool": "13%",
@@ -9,7 +9,7 @@
   "notas": "Tem uma cor citrina, apresenta um aroma\nmuito exuberante de frutos tropicais,\nprincipalmente maracujá e abacaxi.\nÉ um vinho simples mas guloso, perfeito\npara acompanhar pratos de peixe e\nmariscos.",
   "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
   },
- "1":{
+  {
   "nome": "Pedro Carvalho Tinto",
   "produtor": "Pedro Carvalho (Casa Santa Eufémia)",
   "alcool": "13%",
@@ -29,7 +29,7 @@
   "notas": "Apresenta-se, exuberante, fresco\ncom notas florais. Vinho com médio\ncorpo, persistente, fresco e com uma\nexcelente acidez, que faz com que ele\nse mantenha na boca por muito tempo.",
   "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
   },
-   "3":{
+  {
   "nome": "Pedro CarvalhoVinho Tinto",
   "produtor": "PEDRO CARVALHO (CASA SANTA Eufémia)",
   "alcool": "13,5%",
@@ -49,7 +49,7 @@
   "notas": "Aromas de frutos vermelhos bem\nmaduros, com leves notas de café. Na\nboca realça de novo os\nfrutos vermelhos, tem uma acidez\nequilibrada,é persistente e longo com\ntaninos redondos e suaves.",
   "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
   },
-   "5":{
+  {
   "nome": "Pedro CarvalhoTinto Reserva",
   "produtor": "Pedro Carvalho (Casa Santa Eufémia)",
   "alcool": "13,65%",
@@ -69,7 +69,7 @@
   "notas": "Vinho tinto, cor Ruby, aromas de\ncacau e café, agitando o copo\naparecem aromas frescos de ameixa\nvermelha, cereja e cassis, na boca é\num vinho encorpado, fresco, frutado\ne redondo graças a sua acidez deixa\nnotas de chocolate.",
   "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
   },
-   "7":{
+  {
   "nome": "Compota Touriga Nacional\nGrande Reserva",
   "produtor": "Pedro Alexandre Morais de Carvalho",
   "alcool": "15%",
@@ -79,7 +79,7 @@
   "notas": "Vinho tinto, cor ruby, aromas florais e\nfrutos vermelhos bem maduros, com\nnotas de chocolate e café. Na boca\né um vinho encorpado frutado com\nboa acidez, taninos persistentes, mas\ndelicados conferindo-lhe um\nequilíbrio ímpar.",
   "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
   },
-   "8":{
+  {
   "nome": "Casa Santa Eufémia White",
   "produtor": "José Viseu Carvalho & Filhos, Ltda.",
   "alcool": "19,5%",
@@ -89,7 +89,7 @@
   "notas": "Tem uma cor dourada. Aromas muito elegantes e frescos de melão,\nameixas e algumas notas tropicais. Na boca, apresenta-se fresco e\nsuave, é sem dúvida uma\nbebida de verão.",
   "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
   },
-   "9":{
+  {
   "nome": "Casa Santa Eufémia Ruby",
   "produtor": "José Viseu Carvalho & Filhos, Ltda.",
   "alcool": "19,5%",
@@ -99,7 +99,7 @@
   "notas": "Cor Ruby, com aromas de frutos\nvermelhos. Na boca, apresenta-se\nfresco e com taninos persistentes.",
   "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
   },
-   "10":{
+  {
   "nome": null,
   "produtor": null,
   "alcool": null,
@@ -109,4 +109,4 @@
   "notas": null,
   "imagem" : null
   }
-}
+]

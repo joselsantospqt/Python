@@ -1,0 +1,112 @@
+[
+  {
+  "nome": "Pedro Carvalho Branco",
+  "produtor": "Pedro Carvalho (Casa Santa Eufémia)",
+  "alcool": "13%",
+  "temperatura": "8°C",
+  "uvas": "Sauvignon Blanc 50% e Gouveio 50%",
+  "harmonizacao": "Saladas, peixes e frutos do mar.",
+  "notas": "Tem uma cor citrina, apresenta um aroma\nmuito exuberante de frutos tropicais,\nprincipalmente maracujá e abacaxi.\nÉ um vinho simples mas guloso, perfeito\npara acompanhar pratos de peixe e\nmariscos.",
+  "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
+  },
+  {
+  "nome": "Pedro Carvalho Tinto",
+  "produtor": "Pedro Carvalho (Casa Santa Eufémia)",
+  "alcool": "13%",
+  "temperatura": "16°c",
+  "uvas": "Castas tradicionais da Região\nDemarcada do Douro: Touriga\nNacional, Tinta Barroca e Tinta Roriz",
+  "harmonizacao": "Carnes mais leves, peixes.",
+  "notas": "Apresenta um aroma inicial a cacau e\ncafé que de seguida são substituídos\npor notas de frutos vermelhos,\nnomeadamente ameixa madura e cassis.\nNa boca mostra-se fresco jovem, com\numa acidez equilibrada e taninos suaves,\ndando notas de chocolate.",
+  "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
+  },
+   "2":{
+  "nome": "Pedro Carvalho Vinho Branco",
+  "produtor": "PEDRO CARVALHO (CASA SANTA Eufémia)",
+  "alcool": "12,5%",
+  "temperatura": "10oC",
+  "uvas": "Moscatel e Fernão Pires",
+  "harmonizacao": "Saladas, frutos do mar cosidos ou\ngrelhados, peixes grelhados e também\npode ser saboreado como aperitivo.",
+  "notas": "Apresenta-se, exuberante, fresco\ncom notas florais. Vinho com médio\ncorpo, persistente, fresco e com uma\nexcelente acidez, que faz com que ele\nse mantenha na boca por muito tempo.",
+  "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
+  },
+  {
+  "nome": "Pedro CarvalhoVinho Tinto",
+  "produtor": "PEDRO CARVALHO (CASA SANTA Eufémia)",
+  "alcool": "13,5%",
+  "temperatura": "16oC",
+  "uvas": "Castelão, Aragonês, Alicante Bouchet\ne Syrah",
+  "harmonizacao": "Peixes grelhados, carnes vermelhas\ngrelhadas ou assadas e também pode\nser saboreado como aperitivo.",
+  "notas": "Apresenta-se exuberante, com\nnotas de frutas vermelhas e notas\nde cacau e leve fumado devido ao\nestágio nas barricas. Vinho com bom\ncorpo, persistente, fresco e com uma\nexcelente acidez equilibrada, que faz\ncom que ele se mantenha na boca por\nmuito tempo.",
+  "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
+  },
+   "4":{
+  "nome": "Pedro Carvalho\nGrande Reserva Tinto",
+  "produtor": "Pedro Carvalho (Casa Santa Eufémia)",
+  "alcool": "15%",
+  "temperatura": "16oC",
+  "uvas": "100% Touriga Nacional",
+  "harmonizacao": "Carnes vermelhas e queijos fortes.",
+  "notas": "Aromas de frutos vermelhos bem\nmaduros, com leves notas de café. Na\nboca realça de novo os\nfrutos vermelhos, tem uma acidez\nequilibrada,é persistente e longo com\ntaninos redondos e suaves.",
+  "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
+  },
+  {
+  "nome": "Pedro CarvalhoTinto Reserva",
+  "produtor": "Pedro Carvalho (Casa Santa Eufémia)",
+  "alcool": "13,65%",
+  "temperatura": "16oC",
+  "uvas": "100% Tinta Roriz",
+  "harmonizacao": "Carnes vermelhas.",
+  "notas": "Aromas de cacau e café. Agitando o\ncopo aparecem aromas frescos de\nameixa vermelha, cereja e cassis.\nNa boca é um vinho encorpado,\nfresco, frutado e redondo. Graças à\nsua acidez deixa notas de chocolate.",
+  "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
+  },
+   "6":{
+  "nome": "Compota Tinta Roriz Reserva",
+  "produtor": "Pedro Alexandre Morais de Carvalho",
+  "alcool": "15%",
+  "temperatura": "16oC",
+  "uvas": "100% Tinta Roriz",
+  "harmonizacao": null,
+  "notas": "Vinho tinto, cor Ruby, aromas de\ncacau e café, agitando o copo\naparecem aromas frescos de ameixa\nvermelha, cereja e cassis, na boca é\num vinho encorpado, fresco, frutado\ne redondo graças a sua acidez deixa\nnotas de chocolate.",
+  "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
+  },
+  {
+  "nome": "Compota Touriga Nacional\nGrande Reserva",
+  "produtor": "Pedro Alexandre Morais de Carvalho",
+  "alcool": "15%",
+  "temperatura": "16oC",
+  "uvas": "100% Touriga Nacional",
+  "harmonizacao": null,
+  "notas": "Vinho tinto, cor ruby, aromas florais e\nfrutos vermelhos bem maduros, com\nnotas de chocolate e café. Na boca\né um vinho encorpado frutado com\nboa acidez, taninos persistentes, mas\ndelicados conferindo-lhe um\nequilíbrio ímpar.",
+  "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
+  },
+  {
+  "nome": "Casa Santa Eufémia White",
+  "produtor": "José Viseu Carvalho & Filhos, Ltda.",
+  "alcool": "19,5%",
+  "temperatura": "10oC",
+  "uvas": "Castas tradicionais da Região demarcada do Douro para o\nfabrico de vinho do Porto Branco (Malvasia Fina, Muscatel Galego,\nCercial e Gouveio)",
+  "harmonizacao": null,
+  "notas": "Tem uma cor dourada. Aromas muito elegantes e frescos de melão,\nameixas e algumas notas tropicais. Na boca, apresenta-se fresco e\nsuave, é sem dúvida uma\nbebida de verão.",
+  "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
+  },
+  {
+  "nome": "Casa Santa Eufémia Ruby",
+  "produtor": "José Viseu Carvalho & Filhos, Ltda.",
+  "alcool": "19,5%",
+  "temperatura": "16oC",
+  "uvas": "100% Ruby",
+  "harmonizacao": null,
+  "notas": "Cor Ruby, com aromas de frutos\nvermelhos. Na boca, apresenta-se\nfresco e com taninos persistentes.",
+  "imagem" : "http://vinhosdecorte.com.br/wp-content/uploads/2014/02/vinho_oculto.jpg"
+  },
+  {
+  "nome": null,
+  "produtor": null,
+  "alcool": null,
+  "temperatura": null,
+  "uvas": null,
+  "harmonizacao": null,
+  "notas": null,
+  "imagem" : null
+  }
+]

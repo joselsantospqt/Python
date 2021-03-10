@@ -5,12 +5,9 @@ import cpuinfo
 import os
 import time
 import sched
-import nmap
-import hashlib
 import subprocess
-import socket
 import nmap
-
+import socket, sys, pickle
 
 
 class Contexto:
@@ -22,49 +19,76 @@ class Contexto:
     count = 0
     pagina = 0
     scroll_y = 0
+    conexao = []
+
+
+def conexao():
+    retorno = ''
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    try:
+        # Tenta se conectar ao servidor
+        s.connect((socket.gethostname(), 9999))
+        msg = ' '
+        print('Conectado com sucesso !')
+        for i in range(10):
+            # Envia mensagem vazia apenas para indicar a requisição
+            s.send(msg.encode('ascii'))
+            bytes = s.recv(1024)
+            # Converte os bytes para lista
+            dicionario = pickle.loads(bytes)
+            retorno = dicionario
+            time.sleep(2)
+        msg = 'fim'
+        s.send(msg.encode('ascii'))
+    except Exception as erro:
+        print(str(erro))
+
+    # Fecha o socket
+
+    s.close()
+
+    return retorno
 
 
 def retorna_codigo_ping(hostname):
-        """Usa o utilitario ping do sistema operacional para encontrar   o host. ('-c 5') indica, em sistemas linux, que deve mandar 5   pacotes. ('-W 3') indica, em sistemas linux, que deve esperar 3   milisegundos por uma resposta. Esta funcao retorna o codigo de   resposta do ping """
+    """Usa o utilitario ping do sistema operacional para encontrar   o host. ('-c 5') indica, em sistemas linux, que deve mandar 5   pacotes. ('-W 3') indica, em sistemas linux, que deve esperar 3   milisegundos por uma resposta. Esta funcao retorna o codigo de   resposta do ping """
 
-        plataforma = platform.system()
-        args = []
-        if plataforma == "Windows":
-            args = ["ping", "-n", "1", "-l", "1", "-w", "100", hostname]
+    plataforma = platform.system()
+    args = []
+    if plataforma == "Windows":
+        args = ["ping", "-n", "1", "-l", "1", "-w", "100", hostname]
 
-        else:
-            args = ['ping', '-c', '1', '-W', '1', hostname]
+    else:
+        args = ['ping', '-c', '1', '-W', '1', hostname]
 
-        ret_cod = subprocess.call(args,
-                                  stdout=open(os.devnull, 'w'),
-                                  stderr=open(os.devnull, 'w'))
-        return ret_cod
+    ret_cod = subprocess.call(args,
+                              stdout=open(os.devnull, 'w'),
+                              stderr=open(os.devnull, 'w'))
+    return ret_cod
 
 def retorna_info_rede():
     interfaces = psutil.net_if_addrs()
-    nomes = []
+    info_redes = []
 
     # Obtém os nomes das interfaces primeiro
     for i in interfaces:
-        nomes.append(str(i))
+        info_redes.append(str(i))
     # Depois, imprimir os valores:
-    return nomes
+    return info_redes
 
 def retorna_dados_rede_processos():
-
-    dados_process = []
+    dados_processo = []
     for i in psutil.net_connections():
-        dados_process.append(i)
-    return dados_process
+        dados_processo.append(i)
+    return dados_processo
 
 def corpo(contexto):
-
     # VARIÁVEIS BÁSICAS PARA OBTER INFORMAÇÃO DO SISTEMA
     mem = psutil.virtual_memory()
     cpu = psutil.cpu_percent(interval=0)
     disco = psutil.disk_usage('.')
     p = psutil.Process(pid)
-
 
     # AQUI É MONTADO O FUNDO DOS DADOS DO CPU
     s1.fill(BRANCO)
@@ -91,7 +115,6 @@ def corpo(contexto):
         s = "Núcleos: " + str(info_cpu['count'])
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 80))
-
 
         # AQUI É MONTADO A UTILIZAÇÃO DAS MEMORIAS
         largura = contexto.largura_tela - 2 * 20
@@ -120,250 +143,246 @@ def corpo(contexto):
 
     elif contexto.pagina == 1:
 
-      scheduler = sched.scheduler(time.time, time.sleep)
+        scheduler = sched.scheduler(time.time, time.sleep)
 
-      def carrega_memoria():
-        s = "Memória: " + str(mem.percent) + "%"
-        text = fonteMenor.render(s, 1, FUNDO)
-        contexto.tela.blit(text, (20, 0))
-        print('ESCALONADAS DA FUNÇÃO - carrega_memoria:', time.ctime())
+        def carrega_memoria():
+            s = "Memória: " + str(mem.percent) + "%"
+            text = fonteMenor.render(s, 1, FUNDO)
+            contexto.tela.blit(text, (20, 0))
+            print('ESCALONADAS DA FUNÇÃO - carrega_memoria:', time.ctime())
 
-      def carrega_HD():
-        s = "HD: " + str(disco.percent) + "%"
-        text = fonteMenor.render(s, 1, FUNDO)
-        contexto.tela.blit(text, (20, 20))
-        print('ESCALONADAS DA FUNÇÃO - carrega_HD:', time.ctime())
+        def carrega_HD():
+            s = "HD: " + str(disco.percent) + "%"
+            text = fonteMenor.render(s, 1, FUNDO)
+            contexto.tela.blit(text, (20, 20))
+            print('ESCALONADAS DA FUNÇÃO - carrega_HD:', time.ctime())
 
-      def carrega_rede():
-        s = "IP: " + str(ip)
-        text = fonteMenor.render(s, 1, FUNDO)
-        contexto.tela.blit(text, (20, 40))
-        print('ESCALONADAS DA FUNÇÃO - carrega_rede:', time.ctime())
+        def carrega_rede():
+            s = "IP: " + str(ip)
+            text = fonteMenor.render(s, 1, FUNDO)
+            contexto.tela.blit(text, (20, 40))
+            print('ESCALONADAS DA FUNÇÃO - carrega_rede:', time.ctime())
 
-      def carrega_dados_cpu():
+        def carrega_dados_cpu():
 
-        print('%s %0.2f %0.2f' % (time.ctime(), time.time(), time.process_time()))
+            print('%s %0.2f %0.2f' % (time.ctime(), time.time(), time.process_time()))
 
-        s = "Nome: " + str(p.name())
-        text = fonteMenor.render(s, 1, FUNDO)
-        contexto.tela.blit(text, (20, 60))
+            s = "Nome: " + str(p.name())
+            text = fonteMenor.render(s, 1, FUNDO)
+            contexto.tela.blit(text, (20, 60))
 
-        s = "Tempo de usuário: " + str(p.cpu_times().user)
-        text = fonteMenor.render(s, 1, FUNDO)
-        contexto.tela.blit(text, (20, 80))
+            s = "Tempo de usuário: " + str(p.cpu_times().user)
+            text = fonteMenor.render(s, 1, FUNDO)
+            contexto.tela.blit(text, (20, 80))
 
-        s = "Executável: " + str(p.exe())
-        text = fonteMenor.render(s, 1, FUNDO)
-        contexto.tela.blit(text, (20, 100))
+            s = "Executável: " + str(p.exe())
+            text = fonteMenor.render(s, 1, FUNDO)
+            contexto.tela.blit(text, (20, 100))
 
-        s = "Tempo de criação: " + str(time.ctime(p.create_time()))
-        text = fonteMenor.render(s, 1, FUNDO)
-        contexto.tela.blit(text, (350, 0))
+            s = "Tempo de criação: " + str(time.ctime(p.create_time()))
+            text = fonteMenor.render(s, 1, FUNDO)
+            contexto.tela.blit(text, (350, 0))
 
-        s = "Número de threads: " + str(p.num_threads())
-        text = fonteMenor.render(s, 1, FUNDO)
-        contexto.tela.blit(text, (350, 20))
+            s = "Número de threads: " + str(p.num_threads())
+            text = fonteMenor.render(s, 1, FUNDO)
+            contexto.tela.blit(text, (350, 20))
 
-        perc_mem = '{:6.2f}'.format(psutil.cpu_percent())
-        s = "Percentual de uso de CPU: " + str(perc_mem) + "%"
-        text = fonteMenor.render(s, 1, FUNDO)
-        contexto.tela.blit(text, (350, 40))
+            perc_mem = '{:6.2f}'.format(psutil.cpu_percent())
+            s = "Percentual de uso de CPU: " + str(perc_mem) + "%"
+            text = fonteMenor.render(s, 1, FUNDO)
+            contexto.tela.blit(text, (350, 40))
 
-        mem = '{:6.2f}'.format(psutil.virtual_memory().percent)
-        s = "Uso de memória: " + str(mem) + "MB"
-        text = fonteMenor.render(s, 1, FUNDO)
-        contexto.tela.blit(text, (350, 60))
+            mem = '{:6.2f}'.format(psutil.virtual_memory().percent)
+            s = "Uso de memória: " + str(mem) + "MB"
+            text = fonteMenor.render(s, 1, FUNDO)
+            contexto.tela.blit(text, (350, 60))
+            time.sleep(2)
+
+            print('ESCALONADAS DA FUNÇÃO - carrega_dados_cpu:', time.ctime())
+
+        def carrega_info_rede():
+
+            dados_info_rede = retorna_info_rede()
+            dados_processo = retorna_dados_rede_processos()
+            interfaces = psutil.net_if_addrs()
+
+            ipv4 = ''
+            netmask = ''
+            mac = ''
+
+            margin = 160
+            titulo = " Informações de redes: "
+            text = fonteMenor.render(titulo, 1, BRANCO)
+            contexto.tela.blit(text, (5, margin))
+
+            # AQUI FORMATO E PREENCHO VÁRIAVEIS ANTES DE EXIBIR NA TELA
+
+            for i in dados_info_rede:
+                io_status = psutil.net_io_counters(pernic=True)
+                margin += 30
+                nome = fonteMenor.render(i + " :", 1, BRANCO)
+                contexto.tela.blit(nome, (10, margin))
+
+                if i == 'Ethernet':
+                    margin += 25
+
+                    titulo = "IP: "
+                    text = fonteMenor.render(titulo, 1, BRANCO)
+                    contexto.tela.blit(text, (10, margin))
+
+                    titulo = "Gateway: "
+                    text = fonteMenor.render(titulo, 1, BRANCO)
+                    contexto.tela.blit(text, (130, margin))
+
+                    titulo = "Máscara: "
+                    text = fonteMenor.render(titulo, 1, BRANCO)
+                    contexto.tela.blit(text, (300, margin))
+
+                    titulo = "Dados Enviados: "
+                    text = fonteMenor.render(titulo, 1, BRANCO)
+                    contexto.tela.blit(text, (430, margin))
+
+                    titulo = "Dados Recebidos: "
+                    text = fonteMenor.render(titulo, 1, BRANCO)
+                    contexto.tela.blit(text, (580, margin))
+
+                    titulo = "Pacotes Enviados: "
+                    text = fonteMenor.render(titulo, 1, BRANCO)
+                    contexto.tela.blit(text, (725, margin))
+
+                    titulo = "Pacotes Recebidos: "
+                    text = fonteMenor.render(titulo, 1, BRANCO)
+                    contexto.tela.blit(text, (880, margin))
+
+                    for j in interfaces[i]:
+
+                        if str(j.family) == 'AddressFamily.AF_INET':
+                            ipv4 = j.address
+                            netmask = j.netmask
+                        if str(j.family) == 'AddressFamily.AF_LINK':
+                            mac = j.address
+
+                    ip01 = fonteMenor.render(str(ipv4), 1, BRANCO)
+                    gateway = fonteMenor.render(str(mac), 1, BRANCO)
+                    mascara = fonteMenor.render(str(netmask), 1, BRANCO)
+                    db_enviado = fonteMenor.render(str(io_status[i].bytes_sent) + ' bytes', 1, BRANCO)
+                    db_recebido = fonteMenor.render(str(io_status[i].bytes_recv) + ' bytes', 1, BRANCO)
+                    pc_enviado = fonteMenor.render(str(io_status[i].packets_sent) + ' bytes', 1, BRANCO)
+                    pc_recebido = fonteMenor.render(str(io_status[i].packets_recv) + ' bytes', 1, BRANCO)
+
+                    margin += 25
+                    contexto.tela.blit(ip01, (10, margin))
+                    contexto.tela.blit(gateway, (130, margin))
+                    contexto.tela.blit(mascara, (300, margin))
+                    contexto.tela.blit(db_enviado, (430, margin))
+                    contexto.tela.blit(db_recebido, (580, margin))
+                    contexto.tela.blit(pc_enviado, (725, margin))
+                    contexto.tela.blit(pc_recebido, (880, margin))
+
+                    margin += 25
+
+                else:
+
+                    margin += 25
+
+                    titulo = "IP: "
+                    text = fonteMenor.render(titulo, 1, BRANCO)
+                    contexto.tela.blit(text, (10, margin))
+
+                    titulo = "Gateway: "
+                    text = fonteMenor.render(titulo, 1, BRANCO)
+                    contexto.tela.blit(text, (130, margin))
+
+                    titulo = "Máscara: "
+                    text = fonteMenor.render(titulo, 1, BRANCO)
+                    contexto.tela.blit(text, (300, margin))
+
+                    titulo = "Dados Enviados: "
+                    text = fonteMenor.render(titulo, 1, BRANCO)
+                    contexto.tela.blit(text, (430, margin))
+
+                    titulo = "Dados Recebidos: "
+                    text = fonteMenor.render(titulo, 1, BRANCO)
+                    contexto.tela.blit(text, (580, margin))
+
+                    titulo = "Pacotes Enviados: "
+                    text = fonteMenor.render(titulo, 1, BRANCO)
+                    contexto.tela.blit(text, (725, margin))
+
+                    titulo = "Pacotes Recebidos: "
+                    text = fonteMenor.render(titulo, 1, BRANCO)
+                    contexto.tela.blit(text, (880, margin))
+
+                    for j in interfaces[i]:
+                        if str(j.family) == 'AddressFamily.AF_INET':
+                            ipv4 = j.address
+                            netmask = j.netmask
+                        if str(j.family) == 'AddressFamily.AF_LINK':
+                            mac = j.address
+
+                    ip01 = fonteMenor.render(ipv4, 1, BRANCO)
+                    gateway = fonteMenor.render(mac, 1, BRANCO)
+                    mascara = fonteMenor.render(netmask, 1, BRANCO)
+                    DadosRede = fonteMenor.render(str(io_status[i]), 1, BRANCO)
+                    db_enviado = fonteMenor.render(str(io_status[i].bytes_sent) + ' bytes', 1, BRANCO)
+                    db_recebido = fonteMenor.render(str(io_status[i].bytes_recv) + ' bytes', 1, BRANCO)
+                    pc_enviado = fonteMenor.render(str(io_status[i].packets_sent) + ' bytes', 1, BRANCO)
+                    pc_recebido = fonteMenor.render(str(io_status[i].packets_recv) + ' bytes', 1, BRANCO)
+
+                    margin += 25
+                    contexto.tela.blit(ip01, (10, margin))
+                    contexto.tela.blit(gateway, (130, margin))
+                    contexto.tela.blit(mascara, (300, margin))
+                    contexto.tela.blit(db_enviado, (430, margin))
+                    contexto.tela.blit(db_recebido, (580, margin))
+                    contexto.tela.blit(pc_enviado, (725, margin))
+                    contexto.tela.blit(pc_recebido, (880, margin))
+
+                    margin += 25
+
+            margin = 500
+            titulo = " Informações de dados de Processo: "
+            text = fonteMenor.render(titulo, 1, BRANCO)
+            contexto.tela.blit(text, (5, margin))
+
+            margin += 25
+
+            titulo = "PID: "
+            text = fonteMenor.render(titulo, 1, BRANCO)
+            contexto.tela.blit(text, (10, margin))
+
+            titulo = "Laddr - Address: "
+            text = fonteMenor.render(titulo, 1, BRANCO)
+            contexto.tela.blit(text, (100, margin))
+
+            titulo = "Raddr - Address: "
+            text = fonteMenor.render(titulo, 1, BRANCO)
+            contexto.tela.blit(text, (350, margin))
+
+            titulo = "Status: "
+            text = fonteMenor.render(titulo, 1, BRANCO)
+            contexto.tela.blit(text, (650, margin))
+
+            for i in dados_processo:
+                pid = fonteMenor.render(str(i.pid), 1, BRANCO)
+                laddr = fonteMenor.render(str(i.laddr), 1, BRANCO)
+                raddr = fonteMenor.render(str(i.raddr), 1, BRANCO)
+                status = fonteMenor.render(str(i.status), 1, BRANCO)
+
+                margin += 25
+                contexto.tela.blit(pid, (10, margin))
+                contexto.tela.blit(laddr, (100, margin))
+                contexto.tela.blit(raddr, (350, margin))
+                contexto.tela.blit(status, (650, margin))
+
+        scheduler.enter(2, 1, carrega_memoria)
+        scheduler.enter(1, 1, carrega_HD)
+        scheduler.enter(1, 1, carrega_rede)
+        scheduler.enter(1, 1, carrega_info_rede)
+        scheduler.enter(4, 1, carrega_dados_cpu)
         time.sleep(2)
 
-        print('ESCALONADAS DA FUNÇÃO - carrega_dados_cpu:', time.ctime())
-
-      def carrega_info_rede():
-
-          dados_info_rede = retorna_info_rede()
-          dados_processo = retorna_dados_rede_processos()
-          interfaces = psutil.net_if_addrs()
-
-          ipv4 = ''
-          netmask = ''
-          mac = ''
-
-          margin = 160
-          titulo = " Informações de redes: "
-          text = fonteMenor.render(titulo, 1, BRANCO)
-          contexto.tela.blit(text, (5, margin))
-
-          # AQUI FORMATO E PREENCHO VÁRIAVEIS ANTES DE EXIBIR NA TELA
-
-          for i in dados_info_rede:
-              io_status = psutil.net_io_counters(pernic=True)
-              margin += 30
-              nome = fonteMenor.render(i + " :", 1, BRANCO)
-              contexto.tela.blit(nome, (10, margin))
-
-              if i == 'Ethernet':
-                  margin += 25
-
-                  titulo = "IP: "
-                  text = fonteMenor.render(titulo, 1, BRANCO)
-                  contexto.tela.blit(text, (10, margin))
-
-                  titulo = "Gateway: "
-                  text = fonteMenor.render(titulo, 1, BRANCO)
-                  contexto.tela.blit(text, (130, margin))
-
-                  titulo = "Máscara: "
-                  text = fonteMenor.render(titulo, 1, BRANCO)
-                  contexto.tela.blit(text, (300, margin))
-
-                  titulo = "Dados Enviados: "
-                  text = fonteMenor.render(titulo, 1, BRANCO)
-                  contexto.tela.blit(text, (430, margin))
-
-                  titulo = "Dados Recebidos: "
-                  text = fonteMenor.render(titulo, 1, BRANCO)
-                  contexto.tela.blit(text, (580, margin))
-
-                  titulo = "Pacotes Enviados: "
-                  text = fonteMenor.render(titulo, 1, BRANCO)
-                  contexto.tela.blit(text, (725, margin))
-
-                  titulo = "Pacotes Recebidos: "
-                  text = fonteMenor.render(titulo, 1, BRANCO)
-                  contexto.tela.blit(text, (880, margin))
-
-                  for j in interfaces[i]:
-
-                      if str(j.family) == 'AddressFamily.AF_INET':
-                          ipv4 = j.address
-                          netmask = j.netmask
-                      if str(j.family) == 'AddressFamily.AF_LINK':
-                          mac = j.address
-
-                  ip01 = fonteMenor.render(str(ipv4), 1, BRANCO)
-                  gateway = fonteMenor.render(str(mac), 1, BRANCO)
-                  mascara = fonteMenor.render(str(netmask), 1, BRANCO)
-                  db_enviado = fonteMenor.render(str(io_status[i].bytes_sent) + ' bytes', 1, BRANCO)
-                  db_recebido = fonteMenor.render(str(io_status[i].bytes_recv) + ' bytes', 1, BRANCO)
-                  pc_enviado = fonteMenor.render(str(io_status[i].packets_sent) + ' bytes', 1, BRANCO)
-                  pc_recebido = fonteMenor.render(str(io_status[i].packets_recv) + ' bytes', 1, BRANCO)
-
-                  margin += 25
-                  contexto.tela.blit(ip01, (10, margin))
-                  contexto.tela.blit(gateway, (130, margin))
-                  contexto.tela.blit(mascara, (300, margin))
-                  contexto.tela.blit(db_enviado, (430, margin))
-                  contexto.tela.blit(db_recebido, (580, margin))
-                  contexto.tela.blit(pc_enviado, (725, margin))
-                  contexto.tela.blit(pc_recebido, (880, margin))
-
-                  margin += 25
-
-              else:
-
-                  margin += 25
-
-                  titulo = "IP: "
-                  text = fonteMenor.render(titulo, 1, BRANCO)
-                  contexto.tela.blit(text, (10, margin))
-
-                  titulo = "Gateway: "
-                  text = fonteMenor.render(titulo, 1, BRANCO)
-                  contexto.tela.blit(text, (130, margin))
-
-                  titulo = "Máscara: "
-                  text = fonteMenor.render(titulo, 1, BRANCO)
-                  contexto.tela.blit(text, (300, margin))
-
-                  titulo = "Dados Enviados: "
-                  text = fonteMenor.render(titulo, 1, BRANCO)
-                  contexto.tela.blit(text, (430, margin))
-
-                  titulo = "Dados Recebidos: "
-                  text = fonteMenor.render(titulo, 1, BRANCO)
-                  contexto.tela.blit(text, (580, margin))
-
-                  titulo = "Pacotes Enviados: "
-                  text = fonteMenor.render(titulo, 1, BRANCO)
-                  contexto.tela.blit(text, (725, margin))
-
-                  titulo = "Pacotes Recebidos: "
-                  text = fonteMenor.render(titulo, 1, BRANCO)
-                  contexto.tela.blit(text, (880, margin))
-
-                  for j in interfaces[i]:
-                      if str(j.family) == 'AddressFamily.AF_INET':
-                          ipv4 = j.address
-                          netmask = j.netmask
-                      if str(j.family) == 'AddressFamily.AF_LINK':
-                          mac = j.address
-
-                  ip01 = fonteMenor.render(ipv4, 1, BRANCO)
-                  gateway = fonteMenor.render(mac, 1, BRANCO)
-                  mascara = fonteMenor.render(netmask, 1, BRANCO)
-                  DadosRede = fonteMenor.render(str(io_status[i]), 1, BRANCO)
-                  db_enviado = fonteMenor.render(str(io_status[i].bytes_sent) + ' bytes', 1, BRANCO)
-                  db_recebido = fonteMenor.render(str(io_status[i].bytes_recv) + ' bytes', 1, BRANCO)
-                  pc_enviado = fonteMenor.render(str(io_status[i].packets_sent) + ' bytes', 1, BRANCO)
-                  pc_recebido = fonteMenor.render(str(io_status[i].packets_recv) + ' bytes', 1, BRANCO)
-
-                  margin += 25
-                  contexto.tela.blit(ip01, (10, margin))
-                  contexto.tela.blit(gateway, (130, margin))
-                  contexto.tela.blit(mascara, (300, margin))
-                  contexto.tela.blit(db_enviado, (430, margin))
-                  contexto.tela.blit(db_recebido, (580, margin))
-                  contexto.tela.blit(pc_enviado, (725, margin))
-                  contexto.tela.blit(pc_recebido, (880, margin))
-
-                  margin += 25
-
-          margin = 500
-          titulo = " Informações de dados de Processo: "
-          text = fonteMenor.render(titulo, 1, BRANCO)
-          contexto.tela.blit(text, (5, margin))
-
-          margin += 25
-
-          titulo = "PID: "
-          text = fonteMenor.render(titulo, 1, BRANCO)
-          contexto.tela.blit(text, (10, margin))
-
-          titulo = "Laddr - Address: "
-          text = fonteMenor.render(titulo, 1, BRANCO)
-          contexto.tela.blit(text, (100, margin))
-
-          titulo = "Raddr - Address: "
-          text = fonteMenor.render(titulo, 1, BRANCO)
-          contexto.tela.blit(text, (350, margin))
-
-          titulo = "Status: "
-          text = fonteMenor.render(titulo, 1, BRANCO)
-          contexto.tela.blit(text, (650, margin))
-
-          for i in dados_processo:
-
-              pid = fonteMenor.render(str(i.pid), 1, BRANCO)
-              laddr = fonteMenor.render(str(i.laddr), 1, BRANCO)
-              raddr = fonteMenor.render(str(i.raddr), 1, BRANCO)
-              status = fonteMenor.render(str(i.status), 1, BRANCO)
-
-              margin += 25
-              contexto.tela.blit(pid, (10, margin))
-              contexto.tela.blit(laddr, (100, margin))
-              contexto.tela.blit(raddr, (350, margin))
-              contexto.tela.blit(status, (650, margin))
-
-
-
-
-      scheduler.enter(2, 1, carrega_memoria)
-      scheduler.enter(1, 1, carrega_HD)
-      scheduler.enter(1, 1, carrega_rede)
-      scheduler.enter(1, 1, carrega_info_rede)
-      scheduler.enter(4, 1, carrega_dados_cpu)
-      time.sleep(2)
-
-      scheduler.run()
+        scheduler.run()
 
 
     elif contexto.pagina == 2:
@@ -392,7 +411,6 @@ def corpo(contexto):
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (350, 20))
 
-
         # AQUI CARREGO OS ARQUIVOS DO DIRETORIO
         lista = os.listdir()
         lista_arq = []
@@ -418,7 +436,7 @@ def corpo(contexto):
 
             margin = 160
             for i in lista_arq:
-                margin+= 20
+                margin += 20
                 nome_arquivo = i
                 text = fonteMenor.render(nome_arquivo, 1, BRANCO)
                 contexto.tela.blit(text, (5, margin))
@@ -468,7 +486,6 @@ def corpo(contexto):
                 text = fonteMenor.render(nome_pasta, 1, BRANCO)
                 contexto.tela.blit(text, (150, margin))
 
-
     # AQUI É MONTADO A UTILIZAÇÃO DAS MEMORIAS
 
 def montar_tela(contexto):
@@ -479,7 +496,6 @@ def main():
     tela = pygame.display.set_mode((contexto.largura_tela, contexto.altura_tela))
     clock = pygame.time.Clock()
     contexto.tela = tela
-
 
     while not contexto.terminou:
 
@@ -513,7 +529,6 @@ def main():
                 if event.button == 4: contexto.scroll_y = min(contexto.scroll_y + 15, 0)
                 if event.button == 5: contexto.scroll_y = max(contexto.scroll_y - 15, -300)
 
-
         pygame.display.flip()
         clock.tick(60)
 
@@ -526,16 +541,18 @@ if __name__ == '__main__':
     print("\nIniciando Pygame ...")
     pygame.init()
 
-    print("\nIniciando Informações CPU ...")
-    info_cpu = cpuinfo.get_cpu_info()
-    pid = os.getpid()
-    ip = socket.gethostbyname(socket.gethostname())
+    print("\nIniciando Conexão com o banco ...")
 
-    print("\nIniciando Scanner de Rede ...")
+    retorno = conexao()
+
+    info_cpu = cpuinfo.get_cpu_info()
+    pid = int(retorno['pid'])
+
+
     return_codes = dict()
     host_validos = []
 
-    ip_lista = ip.split('.')
+    ip_lista = retorno['ip'].split('.')
     base_ip = ".".join(ip_lista[0:3]) + '.'
 
     return_codes[base_ip + '{0}'.format(1)] = retorna_codigo_ping(base_ip + '{0}'.format(1))
@@ -551,10 +568,6 @@ if __name__ == '__main__':
             mac = vScannner[i]['addresses']['mac']
         except:
             pass
-
-
-
-
 
     print("\nConcluido ! ")
 

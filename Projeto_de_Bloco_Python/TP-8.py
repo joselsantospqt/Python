@@ -19,19 +19,18 @@ class Contexto:
     count = 0
     pagina = 0
     scroll_y = 0
-    conexao = []
+    conexao = None
 
 
-def conexao():
-    retorno = ''
+def conexao(m):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+    retorno = ''
     try:
         # Tenta se conectar ao servidor
         s.connect((socket.gethostname(), 9999))
-        msg = ' '
+        msg = m
         print('Conectado com sucesso !')
-        for i in range(10):
+        for i in range(1):
             # Envia mensagem vazia apenas para indicar a requisição
             s.send(msg.encode('ascii'))
             bytes = s.recv(1024)
@@ -39,7 +38,7 @@ def conexao():
             dicionario = pickle.loads(bytes)
             retorno = dicionario
             time.sleep(2)
-        msg = 'fim'
+        msg = 'init'
         s.send(msg.encode('ascii'))
     except Exception as erro:
         print(str(erro))
@@ -50,6 +49,38 @@ def conexao():
 
     return retorno
 
+def retorna_dados_rede(ip):
+
+    return_codes = dict()
+    host_validos = []
+
+    ip_lista = ip.split('.')
+    base_ip = ".".join(ip_lista[0:3]) + '.'
+
+    return_codes[base_ip + '{0}'.format(1)] = retorna_codigo_ping(base_ip + '{0}'.format(1))
+
+    if return_codes[base_ip + '{0}'.format(1)] == 0:
+        host_validos.append(base_ip + '{0}'.format(1))
+
+    vScannner = nmap.PortScanner()
+    for i in host_validos:
+        try:
+            vScannner.scan(i)
+            ipv4 = (vScannner[i]['addresses']['ipv4'])
+            mac =(vScannner[i]['addresses']['mac'])
+        except:
+            pass
+    return ipv4, mac
+
+def retorna_info_rede():
+    interfaces = psutil.net_if_addrs()
+    info_redes = []
+
+    # Obtém os nomes das interfaces primeiro
+    for i in interfaces:
+        info_redes.append(str(i))
+    # Depois, imprimir os valores:
+    return info_redes
 
 def retorna_codigo_ping(hostname):
     """Usa o utilitario ping do sistema operacional para encontrar   o host. ('-c 5') indica, em sistemas linux, que deve mandar 5   pacotes. ('-W 3') indica, em sistemas linux, que deve esperar 3   milisegundos por uma resposta. Esta funcao retorna o codigo de   resposta do ping """
@@ -67,16 +98,6 @@ def retorna_codigo_ping(hostname):
                               stderr=open(os.devnull, 'w'))
     return ret_cod
 
-def retorna_info_rede():
-    interfaces = psutil.net_if_addrs()
-    info_redes = []
-
-    # Obtém os nomes das interfaces primeiro
-    for i in interfaces:
-        info_redes.append(str(i))
-    # Depois, imprimir os valores:
-    return info_redes
-
 def retorna_dados_rede_processos():
     dados_processo = []
     for i in psutil.net_connections():
@@ -84,35 +105,29 @@ def retorna_dados_rede_processos():
     return dados_processo
 
 def corpo(contexto):
-    # VARIÁVEIS BÁSICAS PARA OBTER INFORMAÇÃO DO SISTEMA
-    mem = psutil.virtual_memory()
-    cpu = psutil.cpu_percent(interval=0)
-    disco = psutil.disk_usage('.')
-    p = psutil.Process(pid)
-
     # AQUI É MONTADO O FUNDO DOS DADOS DO CPU
     s1.fill(BRANCO)
     contexto.tela.blit(s1, (0, contexto.scroll_y))
 
     # AQUI É MONTADO A PÁGINAÇÃO
     if contexto.pagina == 0:
-        s = "CPU: " + str(info_cpu['brand_raw'])
+        s = "CPU: " + str(contexto.conexao['processador_nome'])
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 0))
 
-        s = "Arquitetura: " + str(info_cpu['arch'])
+        s = "Arquitetura: " + str(contexto.conexao['arquitetura'])
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 20))
 
-        s = "Palavra: " + str(info_cpu['bits'])
+        s = "Palavra: " + str(contexto.conexao['palavra'])
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 40))
 
-        s = "Frequência: " + str(info_cpu['hz_actual_friendly'])
+        s = "Frequência: " + str(contexto.conexao['frequencia'])
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 60))
 
-        s = "Núcleos: " + str(info_cpu['count'])
+        s = "Núcleos: " + str(contexto.conexao['nucleos'])
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 80))
 
@@ -121,11 +136,11 @@ def corpo(contexto):
         s2.fill(FUNDO)
         pygame.draw.rect(s2, COR1, (20, 110, largura, 70))
         contexto.tela.blit(s2, (0, 300))
-        largura = largura * mem.percent / 100
+        largura = largura * contexto.conexao['memoria_percent'] / 100
         pygame.draw.rect(s2, COR2, (20, 110, largura, 70))
         contexto.tela.blit(s2, (0, 300))
-        total = round(mem.total / (1024 * 1024 * 1024), 2)
-        texto_barra = "Uso de Memória (Total: " + str(total) + "GB) (Utilizando: " + str(mem.percent) + " %):"
+        total = round(contexto.conexao['memoria_total'] / (1024 * 1024 * 1024), 2)
+        texto_barra = "Uso de Memória (Total: " + str(total) + "GB) (Utilizando: " + str(contexto.conexao['memoria_percent']) + " %):"
         text = fonte.render(texto_barra, 1, COR3)
         contexto.tela.blit(text, (20, 350))
 
@@ -134,10 +149,10 @@ def corpo(contexto):
         s3.fill(FUNDO)
         pygame.draw.rect(s3, COR1, (20, 110, largura, 70))
         contexto.tela.blit(s3, (0, 2 * contexto.altura_tela / 4))
-        largura = largura * disco.percent / 100
+        largura = largura * contexto.conexao['disco_percent'] / 100
         pygame.draw.rect(s3, COR2, (20, 110, largura, 70))
         contexto.tela.blit(s3, (0, 2 * contexto.altura_tela / 4))
-        texto_barra = "Uso de Disco: (" + str(disco.percent) + " %):"
+        texto_barra = "Uso de Disco: (" + str(contexto.conexao['disco_percent']) + " %):"
         text = fonte.render(texto_barra, 1, COR3)
         contexto.tela.blit(text, (20, 500))
 
@@ -146,19 +161,19 @@ def corpo(contexto):
         scheduler = sched.scheduler(time.time, time.sleep)
 
         def carrega_memoria():
-            s = "Memória: " + str(mem.percent) + "%"
+            s = "Memória: " + str(contexto.conexao['memoria_percent']) + "%"
             text = fonteMenor.render(s, 1, FUNDO)
             contexto.tela.blit(text, (20, 0))
             print('ESCALONADAS DA FUNÇÃO - carrega_memoria:', time.ctime())
 
         def carrega_HD():
-            s = "HD: " + str(disco.percent) + "%"
+            s = "HD: " + str(contexto.conexao['disco_percent']) + "%"
             text = fonteMenor.render(s, 1, FUNDO)
             contexto.tela.blit(text, (20, 20))
             print('ESCALONADAS DA FUNÇÃO - carrega_HD:', time.ctime())
 
         def carrega_rede():
-            s = "IP: " + str(ip)
+            s = "IP: " + str(contexto.conexao['ip'])
             text = fonteMenor.render(s, 1, FUNDO)
             contexto.tela.blit(text, (20, 40))
             print('ESCALONADAS DA FUNÇÃO - carrega_rede:', time.ctime())
@@ -167,32 +182,32 @@ def corpo(contexto):
 
             print('%s %0.2f %0.2f' % (time.ctime(), time.time(), time.process_time()))
 
-            s = "Nome: " + str(p.name())
+            s = "Nome: " + str(contexto.conexao['cpu_nome'])
             text = fonteMenor.render(s, 1, FUNDO)
             contexto.tela.blit(text, (20, 60))
 
-            s = "Tempo de usuário: " + str(p.cpu_times().user)
+            s = "Tempo de usuário: " + str(contexto.conexao['temp_usuario'])
             text = fonteMenor.render(s, 1, FUNDO)
             contexto.tela.blit(text, (20, 80))
 
-            s = "Executável: " + str(p.exe())
+            s = "Executável: " + str(contexto.conexao['executavel'])
             text = fonteMenor.render(s, 1, FUNDO)
             contexto.tela.blit(text, (20, 100))
 
-            s = "Tempo de criação: " + str(time.ctime(p.create_time()))
+            s = "Tempo de criação: " + str(time.ctime(contexto.conexao['temp_criacao']))
             text = fonteMenor.render(s, 1, FUNDO)
             contexto.tela.blit(text, (350, 0))
 
-            s = "Número de threads: " + str(p.num_threads())
+            s = "Número de threads: " + str(contexto.conexao['nr_threads'])
             text = fonteMenor.render(s, 1, FUNDO)
             contexto.tela.blit(text, (350, 20))
 
-            perc_mem = '{:6.2f}'.format(psutil.cpu_percent())
+            perc_mem = '{:6.2f}'.format(contexto.conexao['perc_mem'])
             s = "Percentual de uso de CPU: " + str(perc_mem) + "%"
             text = fonteMenor.render(s, 1, FUNDO)
             contexto.tela.blit(text, (350, 40))
 
-            mem = '{:6.2f}'.format(psutil.virtual_memory().percent)
+            mem = '{:6.2f}'.format(contexto.conexao['memoria_percent'])
             s = "Uso de memória: " + str(mem) + "MB"
             text = fonteMenor.render(s, 1, FUNDO)
             contexto.tela.blit(text, (350, 60))
@@ -384,7 +399,6 @@ def corpo(contexto):
 
         scheduler.run()
 
-
     elif contexto.pagina == 2:
 
         s = "Sistema: " + str(platform.system())
@@ -491,11 +505,12 @@ def corpo(contexto):
 def montar_tela(contexto):
     corpo(contexto)
 
-def main():
+def main(retorno):
     contexto = Contexto()
     tela = pygame.display.set_mode((contexto.largura_tela, contexto.altura_tela))
     clock = pygame.time.Clock()
     contexto.tela = tela
+    contexto.conexao = retorno
 
     while not contexto.terminou:
 
@@ -529,6 +544,7 @@ def main():
                 if event.button == 4: contexto.scroll_y = min(contexto.scroll_y + 15, 0)
                 if event.button == 5: contexto.scroll_y = max(contexto.scroll_y - 15, -300)
 
+
         pygame.display.flip()
         clock.tick(60)
 
@@ -542,34 +558,11 @@ if __name__ == '__main__':
     pygame.init()
 
     print("\nIniciando Conexão com o banco ...")
+    retorno = conexao('init')
 
-    retorno = conexao()
+    ipv4, mac = retorna_dados_rede(retorno['ip'])
 
-    info_cpu = cpuinfo.get_cpu_info()
-    pid = int(retorno['pid'])
-
-
-    return_codes = dict()
-    host_validos = []
-
-    ip_lista = retorno['ip'].split('.')
-    base_ip = ".".join(ip_lista[0:3]) + '.'
-
-    return_codes[base_ip + '{0}'.format(1)] = retorna_codigo_ping(base_ip + '{0}'.format(1))
-
-    if return_codes[base_ip + '{0}'.format(1)] == 0:
-        host_validos.append(base_ip + '{0}'.format(1))
-
-    vScannner = nmap.PortScanner()
-    for i in host_validos:
-        try:
-            vScannner.scan(i)
-            ipv4 = vScannner[i]['addresses']['ipv4']
-            mac = vScannner[i]['addresses']['mac']
-        except:
-            pass
-
-    print("\nConcluido ! ")
+    print("Concluido ! ")
 
     fonte = pygame.font.Font('C:\\Windows\\Fonts\\Arial.ttf', 28)
     fonteMenor = pygame.font.Font('C:\\Windows\\Fonts\\Calibri.ttf', 17)
@@ -588,4 +581,4 @@ if __name__ == '__main__':
     s3 = pygame.surface.Surface((1024, 600 / 4))
     s4 = pygame.surface.Surface((1024, 600 / 4))
 
-    main()
+    main(retorno)

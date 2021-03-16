@@ -10,14 +10,6 @@ socket_servidor.bind((host, porta))
 socket_servidor.listen()
 
 print("Servidor de nome", host, "esperando conexão na porta", porta)
-
-# login
-# psutil.cpu_count()
-# qtd de psutil.pids()
-# psutil.cpu_percent()
-# mem = psutil.virtual_memory()
-# mem_percent = mem.used / mem.total
-
 # trocar de lista para dict
 
 import os
@@ -38,7 +30,7 @@ while True:
     pid = os.getpid()
     disco = psutil.disk_usage('.')
     memoria = psutil.virtual_memory()
-    perc_mem = psutil.cpu_percent()
+    perc_mem = psutil.cpu_percent(interval=None)
     p = psutil.Process(pid)
 
     if response == 'init':

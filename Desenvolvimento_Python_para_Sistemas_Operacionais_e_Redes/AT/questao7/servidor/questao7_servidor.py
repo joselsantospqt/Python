@@ -17,7 +17,9 @@ msg_bytes = "informe o nome do arquivo".encode('utf-8')
 socket_cliente.send(msg_bytes)
 nome_arquivo = socket_cliente.recv(50).decode('utf-8')
 
-caminho = f'servidor/{nome_arquivo}'
+
+pathLocal = os.environ["IDE_PROJECT_ROOTS"]
+caminho = f'{pathLocal}/AT/questao6/servidor/{nome_arquivo}'
 print(caminho)
 if os.path.exists(caminho):
 

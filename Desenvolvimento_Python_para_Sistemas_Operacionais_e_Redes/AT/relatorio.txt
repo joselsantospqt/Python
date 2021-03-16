@@ -1,2 +1,5 @@
-Bom dia
-Você pode falar agora?
+ARQUIVO: main.py / TAMANHO: [4653]
+ ARQUIVO: bbbb / TAMANHO: [816]
+ ARQUIVO: aaaaa / TAMANHO: [24]
+ ARQUIVO: aaaaabb / TAMANHO: [0]
+ 

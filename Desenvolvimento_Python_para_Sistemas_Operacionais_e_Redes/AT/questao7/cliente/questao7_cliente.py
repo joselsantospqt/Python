@@ -1,3 +1,4 @@
+import os
 import socket, time
 
 # Cria o socket
@@ -7,16 +8,14 @@ try:
     # Tenta se conectar ao servidor
     s.connect((socket.gethostname(), 8881))
 
-    msg = s.recv(30).decode('utf-8')
+    nome_arquivo = input('Escreva o nome do arquivo')
+    s.send(nome_arquivo)
 
-    nome_arquivo = input(msg)
-    nome_arquivo_bytes = nome_arquivo.encode('utf-8')
-    s.send(nome_arquivo_bytes)
-
+    pathLocal = os.environ["IDE_PROJECT_ROOTS"]
     tamanho = int(s.recv(10).decode('utf-8'))
     if tamanho >= 0:
         recebido = s.recv(tamanho)
-        caminho = f'cliente/{nome_arquivo}'
+        caminho = f'{pathLocal}/AT/questao6/cliente/{nome_arquivo}'
         local = open(caminho, 'wb')
         local.write(recebido)
         local.close()

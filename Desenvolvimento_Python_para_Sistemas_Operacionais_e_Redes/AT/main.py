@@ -1,5 +1,6 @@
 import os
-
+import random
+import concurrent.futures
 import psutil
 
 
@@ -41,7 +42,6 @@ def questao2():
 
 
 def questao3():
-
     # Escreva um programa em Python que:
     # gere uma estrutura que armazena o nome dos arquivos em um determinado diretório e a quantidade de bytes que eles ocupam em disco.
     # Obtenha o nome do diretório do usuário.
@@ -66,7 +66,7 @@ def questao3():
 
     print(f'Diretório do usuário: {os.environ["HOMEPATH"]}')
 
-@rodar
+
 def questao4():
     # Escreva um programa em Python que leia um arquivo texto e apresente na tela o seu conteúdo reverso. Exemplo:
     # arquivo.txt
@@ -79,28 +79,36 @@ def questao4():
     def reverter(x):
         return x[::-1]
 
-
     f = open('relatorio.txt', 'r')
 
     for x in f:
-      txt = reverter(x)
-      print(txt)
-
-
-
-    pass
+        txt = reverter(x)
+        print(txt)
 
 
 def questao5():
-    #Escreva um programa em Python que leia dois arquivos, a.txt e b.txt, como a seguir:
-    #a.txt
-    #1 15 -42 33 -7 -2 39 8
+    # Escreva um programa em Python que leia dois arquivos, a.txt e b.txt, como a seguir:
+    # a.txt
+    # 1 15 -42 33 -7 -2 39 8
     # b.txt
-    #19 56 -43 23 -7 -11 33 21 61 9
-    #Seu programa deve somar elemento por elemento de cada arquivo e imprimir o resultado na tela. Isto é, o primeiro elemento de a.txt deve ser somado ao primeiro elemento de b.txt, segundo elemento de a.txt deve ser somado ao segundo elemento de b.txt, e assim sucessivamente. Caso um arquivo tenha mais elementos que o outro, os elementos que sobrarem do maior devem ser somados a zero.
+    # 19 56 -43 23 -7 -11 33 21 61 9
+    # Seu programa deve somar elemento por elemento de cada arquivo e imprimir o resultado na tela. Isto é, o primeiro elemento de a.txt deve ser somado ao primeiro elemento de b.txt, segundo elemento de a.txt deve ser somado ao segundo elemento de b.txt, e assim sucessivamente. Caso um arquivo tenha mais elementos que o outro, os elementos que sobrarem do maior devem ser somados a zero.
 
+    f = open('a.txt', 'r')
+    for x in f:
+        a = x.split()
 
-    pass
+    f = open('b.txt', 'r')
+    for x in f:
+        b = x.split()
+
+    print(f'Arquivo a: {a} \n Arquivo b: {b}')
+
+    for i in range(10):
+        if i < len(a):
+            print(int(a[i]) + int(b[i]))
+        else:
+            print(b[i])
 
 
 def questao6():
@@ -119,7 +127,8 @@ def questao7():
     pass
 
 
-def questao8():
+@rodar
+def questao8_a():
     # Escreva 3 programas em Python que resolva o seguinte problema:
     # Dado um vetor A de tamanho N com apenas números inteiros positivos, calcule o fatorial de cada um deles e armazene o resultado em um vetor B.
     # Para calcular o fatorial, utilize a seguinte função:
@@ -128,6 +137,66 @@ def questao8():
     # usando o módulo threading com 4 threads;
     # usando o módulo multiprocessing com 4 processos.
 
+    vetorA = []
+    vetorB = []
+
+    def randomInt(n):
+        for i in range(n):
+            inteiro = random.randint(0, 10)
+            vetorA.append(inteiro)
+
+    def fatorial(n):
+        fat = n
+        for i in range(n - 1, 1, -1):
+            fat = fat * i
+        return (fat)
+
+    n = int(input('Digite o tamanho do vetor: '))
+    randomInt(n)
+
+    for i in vetorA:
+        vetorB.append(fatorial(i))
+
+    print(vetorB)
+
+def questao8_b():
+    vetorA = []
+    vetorB = []
+
+    def randomInt(n):
+        for i in range(n):
+            inteiro = random.randint(0, 10)
+            vetorA.append(inteiro)
+
+    def fatorial(n):
+        fat = n
+        for i in range(n - 1, 1, -1):
+            fat = fat * i
+        return (fat)
+
+    n = int(input('Digite o tamanho do vetor: '))
+    randomInt(n)
+
+    def print():
+        vetorB.clear()
+        for i in vetorA:
+            vetorB.append(fatorial(i))
+        print(vetorB)
+
+    #
+    threadings = 4
+    for i in range(threadings):
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            executor.map(print(), range(4))
+
+    # threadings = 4
+    # for i in range(threadings):
+    #    retorno = threading.Thread(target=exibir(), args=())
+    #    retorno.start()
+
+
+
+def questao8_c():
     pass
 
 

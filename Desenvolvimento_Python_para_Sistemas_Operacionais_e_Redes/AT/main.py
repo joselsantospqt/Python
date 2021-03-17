@@ -1,6 +1,10 @@
+import multiprocessing
 import os
 import random
-import concurrent.futures
+import threading
+import time
+from concurrent.futures.thread import ThreadPoolExecutor
+
 import psutil
 
 
@@ -28,8 +32,6 @@ def questao1():
         print(f'PID:{i.pid} / NOME: {i.name()} ')
 
     print(f'Uso CPU:{CPU} / Uso Memória: {memoria} ')
-
-    pass
 
 
 def questao2():
@@ -127,7 +129,6 @@ def questao7():
     pass
 
 
-@rodar
 def questao8_a():
     # Escreva 3 programas em Python que resolva o seguinte problema:
     # Dado um vetor A de tamanho N com apenas números inteiros positivos, calcule o fatorial de cada um deles e armazene o resultado em um vetor B.
@@ -159,6 +160,7 @@ def questao8_a():
 
     print(vetorB)
 
+
 def questao8_b():
     vetorA = []
     vetorB = []
@@ -177,31 +179,170 @@ def questao8_b():
     n = int(input('Digite o tamanho do vetor: '))
     randomInt(n)
 
-    def print():
+    def imprimir():
         vetorB.clear()
         for i in vetorA:
             vetorB.append(fatorial(i))
         print(vetorB)
 
-    #
     threadings = 4
+    lista_threads = []
     for i in range(threadings):
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-            executor.map(print(), range(4))
+        retorno = threading.Thread(target=imprimir(), args=(i,))
+        retorno.start()
+        lista_threads.append(retorno)
 
-    # threadings = 4
-    # for i in range(threadings):
-    #    retorno = threading.Thread(target=exibir(), args=())
-    #    retorno.start()
-
+    for t in lista_threads:
+        t.join()
 
 
 def questao8_c():
-    pass
+    vetorA = []
+    vetorB = []
 
+    def randomInt(n):
+        for i in range(n):
+            inteiro = random.randint(0, 10)
+            vetorA.append(inteiro)
 
-def questao9():
+    def fatorial(n):
+        fat = n
+        for i in range(n - 1, 1, -1):
+            fat = fat * i
+        return (fat)
+
+    def imprimir():
+        vetorB.clear()
+        for i in vetorA:
+            vetorB.append(fatorial(i))
+        print(vetorB)
+
+    n = int(input('Digite o tamanho do vetor: '))
+    randomInt(n)
+
+    threadings = 4
+    lista_threads = []
+
+    for i in range(threadings):
+        ini = i * int(n / threadings)
+        fim = (i + 1) * int(n / threadings)
+        retorno = multiprocessing.Process(target=imprimir(), args=(vetorB[ini:fim], i))
+        retorno.start()
+        lista_threads.append(retorno)
+
+    for t in lista_threads:
+        t.join()
+
+@rodar
+def questao9_a():
     # Teste todos os 3 programas da questão 8, capture os tempos de execução deles e compare-os, explicando os resultados de tempos. Varie o valor de N em 1.000.000, 5000.000, 10.000.000 (ou escolha números maiores ou melhores de acordo com a velocidade de processamento do computador utilizado para testes).
     # Obs.: Para testar, crie um vetor com apenas um número relativamente grande (10, por exemplo) ou use a função random para gerar um vetor com números aleatórios. Cuidado ao usar números muito grandes, pois o fatorial pode resultar em um valor que o computador não consiga representar por falta de precisão.
 
-    pass
+    vetorA = []
+    vetorB = []
+
+    def randomInt(n):
+        for i in range(n):
+            inteiro = random.randint(0, 10)
+            vetorA.append(inteiro)
+
+    def fatorial(n):
+        fat = n
+        for i in range(n - 1, 1, -1):
+            fat = fat * i
+        return (fat)
+
+    n = int(input('Digite o tamanho do vetor: '))
+    randomInt(n)
+    t_inicio = float(time.time())
+
+    def calculaFatorial():
+        for i in vetorA:
+            vetorB.append(fatorial(i))
+
+    with ThreadPoolExecutor(max_workers=n) as executor:
+        qtd = 1_000_000
+        j = executor.submit(calculaFatorial(), n/qtd)
+
+
+    print(vetorB)
+    t_fim = float(time.time())
+    print("Tempo", t_fim - t_inicio)
+
+
+def questao9_b():
+    vetorA = []
+    vetorB = []
+
+    def randomInt(n):
+        for i in range(n):
+            inteiro = random.randint(0, 10)
+            vetorA.append(inteiro)
+
+    def fatorial(n):
+        fat = n
+        for i in range(n - 1, 1, -1):
+            fat = fat * i
+        return (fat)
+
+    n = int(input('Digite o tamanho do vetor: '))
+    randomInt(n)
+
+    def imprimir():
+        vetorB.clear()
+        for i in vetorA:
+            vetorB.append(fatorial(i))
+        print(vetorB)
+
+    threadings = 4
+    lista_threads = []
+    for i in range(threadings):
+        ini = i * int(n / threadings)
+        fim = (i + 1) * int(n / threadings)
+        retorno = multiprocessing.Process(target=imprimir(), args=(vetorB[ini:fim], i))
+        retorno.start()
+        lista_threads.append(retorno)
+
+    for t in lista_threads:
+        t.join()
+
+def questao9_c():
+    vetorA = []
+    vetorB = []
+
+    def randomInt(n):
+        for i in range(n):
+            inteiro = random.randint(0, 10)
+            vetorA.append(inteiro)
+
+    def fatorial(n):
+        fat = n
+        for i in range(n - 1, 1, -1):
+            fat = fat * i
+        return (fat)
+
+    def imprimir():
+        vetorB.clear()
+        for i in vetorA:
+            vetorB.append(fatorial(i))
+        print(vetorB)
+
+    n = int(input('Digite o tamanho do vetor: '))
+    randomInt(n)
+    t_inicio = float(time.time())
+
+    threadings = 4
+    lista_threads = []
+
+    for i in range(threadings):
+        ini = i * int(n / threadings)
+        fim = (i + 1) * int(n / threadings)
+        retorno = multiprocessing.Process(target=imprimir(), args=(vetorB[ini:fim], i))
+        retorno.start()
+        lista_threads.append(retorno)
+
+    for t in lista_threads:
+        t.join()
+
+    t_fim = float(time.time())
+    print("Tempo:", t_fim - t_inicio)

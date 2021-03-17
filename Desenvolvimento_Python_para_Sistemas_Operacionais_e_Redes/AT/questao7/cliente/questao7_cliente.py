@@ -1,31 +1,39 @@
 import os
+import pickle
 import socket, time
 
-# Cria o socket
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+def motrar_dados(dado):
+    print(f""" 
+    memoria total: {dado['mem_total']},
+    memoria disponível: {dado['mem_disp']}
+    """)
 
-try:
-    # Tenta se conectar ao servidor
-    s.connect((socket.gethostname(), 8881))
+host = socket.gethostname()
+porta = 9999
 
-    nome_arquivo = input('Escreva o nome do arquivo')
-    s.send(nome_arquivo)
+udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+dest = (host, porta)
+msg = ' '
+envia = msg.encode('UTF-8')
 
-    pathLocal = os.environ["IDE_PROJECT_ROOTS"]
-    tamanho = int(s.recv(10).decode('utf-8'))
-    if tamanho >= 0:
-        recebido = s.recv(tamanho)
-        caminho = f'{pathLocal}/AT/questao6/cliente/{nome_arquivo}'
-        local = open(caminho, 'wb')
-        local.write(recebido)
-        local.close()
-    else:
-        print('não existe arquivo no servidor')
+for i in range(4):
+    if i == 3:
+        msg = 'memoria'
+        envia = msg.encode('UTF-8')
+    udp.sendto(envia, dest)
+    udp.settimeout(5.0)
+    try:
+        (msg_serv, dest) = udp.recvfrom(1024)
+        resposta = pickle.loads(msg_serv)
+        if resposta != '':
+            motrar_dados(resposta)
+            break
+        else:
+            print('processando')
+    except Exception as erro:
+        print(str(erro))
+        input("Pressione qualquer tecla para sair...")
+        continue
 
-except Exception as erro:
-    print(str(erro))
+udp.close()
 
-# Fecha o socket
-s.close()
-
-input("Pressione qualquer tecla para sair...")

@@ -8,6 +8,8 @@ import sched
 import subprocess
 import nmap
 import socket, sys, pickle
+import asyncio
+import aiohttp
 
 
 class Contexto:
@@ -23,32 +25,29 @@ class Contexto:
 
 
 def conexao(m):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    retorno = ''
+    tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         # Tenta se conectar ao servidor
-        s.connect((socket.gethostname(), 9999))
-        msg = m
-        print('Conectado com sucesso !')
-        for i in range(1):
-            # Envia mensagem vazia apenas para indicar a requisição
-            s.send(msg.encode('ascii'))
-            bytes = s.recv(1024)
-            # Converte os bytes para lista
-            dicionario = pickle.loads(bytes)
-            retorno = dicionario
-            time.sleep(2)
-        msg = 'init'
-        s.send(msg.encode('ascii'))
+        tcp.connect((socket.gethostname(), 9999))
+
+        mensagem = m
+        tcp.send(mensagem.encode('UTF-8'))
+
+        bytes = tcp.recv(4096)
+        retorno = pickle.loads(bytes)
+
+        return retorno
+
+        mensagem = 'fim'
+        tcp.send(mensagem.encode('UTF-8'))
+
     except Exception as erro:
         print(str(erro))
 
     # Fecha o socket
+    tcp.close()
 
-    s.close()
-
-    return retorno
-
+    input("Pressione qualquer tecla para sair...")
 def retorna_dados_rede(ip):
 
     return_codes = dict()
@@ -105,6 +104,16 @@ def retorna_dados_rede_processos():
     return dados_processo
 
 def corpo(contexto):
+
+    print("\nIniciando Conexão com o banco ...")
+    retorno = conexao('init')
+    if retorno != '':
+        contexto.conexao = retorno
+        ipv4, mac = retorna_dados_rede(retorno['ip'])
+
+    print("Concluido ! ")
+
+
     # AQUI É MONTADO O FUNDO DOS DADOS DO CPU
     s1.fill(BRANCO)
     contexto.tela.blit(s1, (0, contexto.scroll_y))
@@ -505,12 +514,12 @@ def corpo(contexto):
 def montar_tela(contexto):
     corpo(contexto)
 
-def main(retorno):
+def main():
     contexto = Contexto()
     tela = pygame.display.set_mode((contexto.largura_tela, contexto.altura_tela))
     clock = pygame.time.Clock()
     contexto.tela = tela
-    contexto.conexao = retorno
+
 
     while not contexto.terminou:
 
@@ -557,13 +566,6 @@ if __name__ == '__main__':
     print("\nIniciando Pygame ...")
     pygame.init()
 
-    print("\nIniciando Conexão com o banco ...")
-    retorno = conexao('init')
-
-    ipv4, mac = retorna_dados_rede(retorno['ip'])
-
-    print("Concluido ! ")
-
     fonte = pygame.font.Font('C:\\Windows\\Fonts\\Arial.ttf', 28)
     fonteMenor = pygame.font.Font('C:\\Windows\\Fonts\\Calibri.ttf', 17)
     pygame.display.set_caption("Gerenciador de tarefas TP-4.")
@@ -581,4 +583,4 @@ if __name__ == '__main__':
     s3 = pygame.surface.Surface((1024, 600 / 4))
     s4 = pygame.surface.Surface((1024, 600 / 4))
 
-    main(retorno)
+    main()

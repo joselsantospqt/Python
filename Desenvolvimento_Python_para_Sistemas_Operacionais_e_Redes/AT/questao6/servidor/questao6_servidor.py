@@ -27,7 +27,7 @@ while True:
         socket_cliente.send(bytes)
 
     else:
-        break;
+        break
 
 socket_cliente.close()
 

@@ -8,6 +8,7 @@ from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures.thread import ThreadPoolExecutor
 import psutil
 
+
 def rodar(func):
     if __name__ == '__main__':
         print('-' * 10, func.__name__, '-' * 10)
@@ -165,11 +166,13 @@ def questao8_a():
     for i in vetorA:
         vetorB.append(fatorial(i))
 
+    print(vetorB)
+
 
 def questao8_b():
     vetorA = []
     vetorB = []
-    threadings = 4
+    threadings = [4, 8, 16, 32]
     lista_threads = []
 
     def randomInt(n):
@@ -183,62 +186,62 @@ def questao8_b():
             fat = fat * i
         return (fat)
 
-    def imprimir():
+    def imprimir(x):
+        vetorA.clear()
         vetorB.clear()
+        randomInt(x)
         for i in vetorA:
             vetorB.append(fatorial(i))
         print(vetorB)
 
-    n = int(input('Digite o tamanho do vetor: '))
-    randomInt(n)
-
-
-    for i in range(threadings):
-        retorno = threading.Thread(target=imprimir(), args=(i,))
+    for i in threadings:
+        lista_threads.clear()
+        retorno = threading.Thread(target=imprimir, args=(i,))
         retorno.start()
         lista_threads.append(retorno)
 
-    for t in lista_threads:
-        t.join()
+        for t in lista_threads:
+            t.join()
 
+vetorA = []
+vetorB = []
+
+def carregaCalculos01(n):
+    def randomInt(n):
+        n = int(n)
+        for i in range(n):
+            vetorA.append(random.randint(1, 10))
+
+    def fatorial(n):
+        fat = n
+        for i in range(n - 1, 1, -1):
+            fat = fat * i
+        return (fat)
+
+    vetorA.clear()
+    vetorB.clear()
+    randomInt(n)
+    for i in vetorA:
+        vetorB.append(fatorial(i))
+    print(vetorB)
 
 def questao8_c():
-    vetorA = []
-    vetorB = []
-    threadings = 4
+    threadings = [4, 8, 16, 32]
     lista_threads = []
 
-    def randomInt(n):
-        for i in range(n):
-            inteiro = random.randint(0, 10)
-            vetorA.append(inteiro)
-
-    def fatorial(n):
-        fat = n
-        for i in range(n - 1, 1, -1):
-            fat = fat * i
-        return (fat)
-
-    def imprimir():
-        vetorB.clear()
-        for i in vetorA:
-            vetorB.append(fatorial(i))
-        print(vetorB)
-
-    n = int(input('Digite o tamanho do vetor: '))
-    randomInt(n)
-
-    for i in range(threadings):
-        retorno = multiprocessing.Process(target=imprimir(), args=(i, ))
+    for i in threadings:
+        lista_threads.clear()
+        retorno = multiprocessing.Process(target=carregaCalculos01, args=(i, ))
         retorno.start()
         lista_threads.append(retorno)
 
-    for t in lista_threads:
-        t.join()
+        for t in lista_threads:
+            t.join()
 
+vetorA.clear()
+vetorB.clear()
 
-def carregaCalculos(n):
-
+def carregaCalculos02(n):
     def randomInt(n):
         n = int(n)
         for i in range(n):
@@ -262,9 +265,11 @@ def questao9_a():
     # Obs.: Para testar, crie um vetor com apenas um número relativamente grande (10, por exemplo) ou use a função random para gerar um vetor com números aleatórios. Cuidado ao usar números muito grandes, pois o fatorial pode resultar em um valor que o computador não consiga representar por falta de precisão.
 
     vetorA = []
-    vetorB = []
+    thread = [4, 8, 16]
+    quantidade = [1000000, 5000000, 10000000]
 
     def randomInt(n):
+        vetorA.clear()
         for i in range(n):
             inteiro = random.randint(0, 10)
             vetorA.append(inteiro)
@@ -275,40 +280,48 @@ def questao9_a():
             fat = fat * i
         return (fat)
 
+    for qtd in quantidade:
+        for threadings in thread:
+            randomInt(int(qtd / threadings))
+            print(f'THEREADINGS-{threadings}+ {qtd} :')
+            t_inicio = float(time.time())
+            for i in vetorA:
+                fatorial(i)
+            t_fim = float(time.time())
+            print(t_fim - t_inicio)
 
-    n = int(input('Digite o tamanho do vetor: '))
-    randomInt(n)
-
-    for i in vetorA:
-        t_inicio = float(time.time())
-        vetorB.append(fatorial(i))
-        t_fim = float(time.time())
-        print(vetorB)
-        print(t_fim - t_inicio)
+    print('FIM-SEQUENCIAL\n ')
 
 
 def questao9_b():
-    threadings = 4
-    qtd = 5000000
+    thread = [4, 8, 16]
+    quantidade = [1000000, 5000000, 10000000]
 
-    with ThreadPoolExecutor(max_workers=threadings) as t:
-        v = []
-        for _ in range(threadings):
-            v.append(t.submit(carregaCalculos, qtd / threadings))
+    for qtd in quantidade:
+        for threadings in thread:
+            with ThreadPoolExecutor(max_workers=threadings) as t:
+                v = []
+                print(f'THEREADINGS-{threadings}+ {qtd} :')
+                v.append(t.submit(carregaCalculos02, qtd / threadings))
 
-        for c in concurrent.futures.as_completed(v):
-            print(c.result())
+                for c in concurrent.futures.as_completed(v):
+                    print(c.result())
+
+    print('FIM-THEREADINGS\n ')
 
 
 def questao9_c():
-    ProcessPool = 4
-    qtd = 10000000
+    Processos = [4, 8, 16]
+    quantidade = [1000000, 5000000, 10000000]
 
+    for qtd in quantidade:
+        for ProcessPool in Processos:
+            with ProcessPoolExecutor(max_workers=ProcessPool) as t:
+                v = []
+                print(f'PROCESS-{ProcessPool} + {qtd}')
+                v.append(t.submit(carregaCalculos02, qtd / ProcessPool))
 
-    with ProcessPoolExecutor(max_workers=ProcessPool) as t:
-        v = []
-        for _ in range(ProcessPool):
-            v.append(t.submit(carregaCalculos, qtd / ProcessPool))
+                for c in concurrent.futures.as_completed(v):
+                    print(c.result())
 
-        for c in concurrent.futures.as_completed(v):
-            print(c.result())
+    print('FIM-PROCESSPOLL\n ')

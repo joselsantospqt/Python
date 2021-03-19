@@ -2,12 +2,12 @@ import socket, psutil, pickle
 import cpuinfo
 
 # Cria o socket
-socket_servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Obtem o nome da máquina
 host = socket.gethostname()
 porta = 9999
-socket_servidor.bind((host, porta))
-socket_servidor.listen()
+tcp.bind((host, porta))
+tcp.listen()
 
 print("Servidor de nome", host, "esperando conexão na porta", porta)
 # trocar de lista para dict
@@ -16,25 +16,26 @@ import os
 
 user = os.getlogin()
 
-(socket_cliente, addr) = socket_servidor.accept()
+(socket_cliente, addr) = tcp.accept()
 print("Conectado a:", str(addr))
 
+response = []
 while True:
     # Recebe pedido do cliente:
-    msg = socket_cliente.recv(10)
-    response = msg.decode('ascii')
+    response.clear()
+    mensagem = socket_cliente.recv(4096)
+    reposta = mensagem.decode('UTF-8')
 
     # Gera a lista de resposta
     info_cpu = cpuinfo.get_cpu_info()
-    a = info_cpu['brand_raw']
     pid = os.getpid()
     disco = psutil.disk_usage('.')
     memoria = psutil.virtual_memory()
     perc_mem = psutil.cpu_percent(interval=None)
     p = psutil.Process(pid)
 
-    if response == 'init':
-        resposta = {
+    if reposta == 'init':
+        response = {
             'pid': os.getpid(),
             'ip': socket.gethostbyname(socket.gethostname()),
             'processador_nome': info_cpu['brand_raw'],
@@ -58,18 +59,18 @@ while True:
 
         }
 
-    elif response == 'get':
-        resposta = {
+    elif reposta == 'get':
+        response = {
             'ip': socket.gethostbyname(socket.gethostname())
         }
-        bytes_resp = pickle.dumps(resposta)
-        socket_cliente.send(bytes_resp)
 
-    elif response == 'fim':
+    elif reposta == 'fim':
         break
 
-    bytes_resp = pickle.dumps(resposta)
-    socket_cliente.send(bytes_resp)
+    bytes = pickle.dumps(response)
+    socket_cliente.send(bytes)
 
 socket_cliente.close()
+
+input("Pressione qualquer tecla para sair...")  # Espera usu�rio ler
 

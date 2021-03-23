@@ -100,24 +100,6 @@ def retorna_codigo_ping(hostname):
     return ret_cod
 
 
-def retorna_info_rede():
-    interfaces = psutil.net_if_addrs()
-    info_redes = []
-
-    # Obtém os nomes das interfaces primeiro
-    for i in interfaces:
-        info_redes.append(str(i))
-    # Depois, imprimir os valores:
-    return info_redes
-
-
-def retorna_dados_rede_processos():
-    dados_processo = []
-    for i in psutil.net_connections():
-        dados_processo.append(i)
-    return dados_processo
-
-
 def corpo(contexto):
     # AQUI É MONTADO O FUNDO DOS DADOS DO CPU
     s1.fill(BRANCO)
@@ -230,8 +212,8 @@ def corpo(contexto):
 
         def carrega_info_rede():
 
-            dados_info_rede = retorna_info_rede()
-            dados_processo = retorna_dados_rede_processos()
+            dados_info_rede = contexto.conexao['info-rede']
+            dados_processo = contexto.conexao['dados_processos']
             interfaces = psutil.net_if_addrs()
 
             ipv4 = ''
@@ -442,31 +424,15 @@ def corpo(contexto):
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (350, 20))
 
-        # AQUI CARREGO OS ARQUIVOS DO DIRETORIO
-        lista = os.listdir()
-        lista_arq = []
-        lista_dir = []
-        dic = {}
-        for i in lista:
-            if os.path.isfile(i):
-                lista_arq.append(i)
-
-                dic[i] = []
-                dic[i].append(os.stat(i).st_size)
-                dic[i].append(os.stat(i).st_atime)
-                dic[i].append(os.stat(i).st_mtime)
-
-            else:
-                lista_dir.append(i)
 
         # AQUI É MONTADO A EXIBIÇÃO DO DIRETORIO
-        if len(lista_arq) > 0:
+        if len(contexto.conexao['lista_arq']) > 0:
             titulo = "Arquivos: "
             text = fonteMenor.render(titulo, 1, BRANCO)
             contexto.tela.blit(text, (5, 160))
 
             margin = 160
-            for i in lista_arq:
+            for i in contexto.conexao['lista_arq']:
                 margin += 20
                 nome_arquivo = i
                 text = fonteMenor.render(nome_arquivo, 1, BRANCO)
@@ -491,27 +457,27 @@ def corpo(contexto):
             contexto.tela.blit(text, (490, margin))
 
             # AQUI FORMATO E PREENCHO VÁRIAVEIS ANTES DE EXIBIR NA TELA
-            for i in dic:
+            for i in contexto.conexao['dic']:
                 margin += 20
                 nome = fonteMenor.render(i, 1, BRANCO)
-                kb = (dic[i][0] / 1000)
+                kb = (contexto.conexao['dic'][i][0] / 1000)
                 formataTamanho = '{:10}'.format(str('{:.2f}'.format(kb) + ' KB'))
                 tamanho = fonteMenor.render(formataTamanho, 1, BRANCO)
-                criacao = fonteMenor.render(str(time.ctime(dic[i][1])), 1, BRANCO)
-                modificacao = fonteMenor.render(str(time.ctime(dic[i][2])), 1, BRANCO)
+                criacao = fonteMenor.render(str(time.ctime(contexto.conexao['dic'][i][1])), 1, BRANCO)
+                modificacao = fonteMenor.render(str(time.ctime(contexto.conexao['dic'][i][2])), 1, BRANCO)
 
                 contexto.tela.blit(nome, (5, margin))
                 contexto.tela.blit(tamanho, (150, margin))
                 contexto.tela.blit(criacao, (250, margin))
                 contexto.tela.blit(modificacao, (490, margin))
 
-        if len(lista_dir) > 0:
+        if len(contexto.conexao['lista_dir']) > 0:
             titulo = "Diretórios: "
             text = fonteMenor.render(titulo, 1, BRANCO)
             contexto.tela.blit(text, (150, 160))
 
             margin = 160
-            for i in lista_dir:
+            for i in contexto.conexao['lista_dir']:
                 margin += 20
                 nome_pasta = i
                 text = fonteMenor.render(nome_pasta, 1, BRANCO)

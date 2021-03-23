@@ -14,7 +14,6 @@ print("Servidor de nome", host, "esperando conexão na porta", porta)
 # trocar de lista para dict
 
 
-
 (socket_cliente, addr) = tcp.accept()
 print("Conectado a:", str(addr))
 
@@ -53,19 +52,48 @@ while True:
             'cpu': psutil.cpu_percent(interval=0),
             'disco_total': disco.total,
             'disco_usado': disco.used,
-            'disco_percent': disco.percent
+            'disco_percent': disco.percent,
+            'info-rede': [],
+            'dados_processos': []
 
         }
 
+        interfaces = psutil.net_if_addrs()
+
+        # Obtém os nomes das interfaces primeiro
+        for i in interfaces:
+            response['info-rede'].append(str(i))
+
+        # Obtém os dados de processo do computador
+        # for i in psutil.net_connections():
+        #     response['dados_processos'].append(i)
+
+    elif reposta == "listaArquiDoc":
+        response = {
+            'lista_arq': [],
+            'lista_dir': [],
+            'dic': []
+        }
+        # AQUI CARREGO OS ARQUIVOS DO DIRETORIO
+        lista = os.listdir()
+        for i in lista:
+            dic = []
+            if os.path.isfile(i):
+                response['lista_arq'].append(i)
+                dic.extend([os.stat(i).st_size, os.stat(i).st_atime, os.stat(i).st_mtime])
+                response['dic'].append(dic)
+            else:
+                response['lista_dir'].append(i)
     elif reposta == 'updateSHD':
         response = {
             'disco_total': disco.total,
             'disco_usado': disco.used,
             'disco_percent': disco.percent
         }
-
     elif reposta == 'fim':
-        break
+        continue
+    elif reposta == b'':
+        break;
 
     bytes = pickle.dumps(response)
     socket_cliente.send(bytes)
@@ -73,4 +101,3 @@ while True:
 socket_cliente.close()
 
 input("Pressione qualquer tecla para sair...")  # Espera usu�rio ler
-

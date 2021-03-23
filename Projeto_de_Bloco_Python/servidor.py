@@ -1,5 +1,6 @@
 import socket, psutil, pickle
 import cpuinfo
+import os
 
 # Cria o socket
 tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -12,9 +13,7 @@ tcp.listen()
 print("Servidor de nome", host, "esperando conexão na porta", porta)
 # trocar de lista para dict
 
-import os
 
-user = os.getlogin()
 
 (socket_cliente, addr) = tcp.accept()
 print("Conectado a:", str(addr))
@@ -22,7 +21,6 @@ print("Conectado a:", str(addr))
 response = []
 while True:
     # Recebe pedido do cliente:
-    response.clear()
     mensagem = socket_cliente.recv(4096)
     reposta = mensagem.decode('UTF-8')
 
@@ -59,9 +57,11 @@ while True:
 
         }
 
-    elif reposta == 'get':
+    elif reposta == 'updateSHD':
         response = {
-            'ip': socket.gethostbyname(socket.gethostname())
+            'disco_total': disco.total,
+            'disco_usado': disco.used,
+            'disco_percent': disco.percent
         }
 
     elif reposta == 'fim':

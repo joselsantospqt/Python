@@ -1,4 +1,3 @@
-
 import pygame
 import platform
 import psutil
@@ -12,6 +11,7 @@ import socket, sys, pickle
 import asyncio
 import aiohttp
 import concurrent.futures
+
 
 class Contexto:
     terminou = False
@@ -67,17 +67,21 @@ def retorna_dados_rede(ip):
 
     return host_validos
 
-def func01(host_validos):
-    array = []
+
+def funcao_complementar_rede(host_validos):
     vScannner = nmap.PortScanner()
     for i in host_validos:
         try:
+            print("\nCarregando Scan ...")
             vScannner.scan(i)
-            array.append(vScannner[i]['addresses']['ipv4'])
-            array.append(vScannner[i]['addresses']['mac'])
+            print("\nCompleto!")
+            ipv4 = vScannner[i]['addresses']['ipv4']
+            mac = vScannner[i]['addresses']['mac']
         except:
             pass
-    return array
+
+    return ipv4, mac
+
 
 def retorna_codigo_ping(hostname):
     """Usa o utilitario ping do sistema operacional para encontrar   o host. ('-c 5') indica, em sistemas linux, que deve mandar 5   pacotes. ('-W 3') indica, em sistemas linux, que deve esperar 3   milisegundos por uma resposta. Esta funcao retorna o codigo de   resposta do ping """
@@ -95,6 +99,7 @@ def retorna_codigo_ping(hostname):
                               stderr=open(os.devnull, 'w'))
     return ret_cod
 
+
 def retorna_info_rede():
     interfaces = psutil.net_if_addrs()
     info_redes = []
@@ -105,6 +110,7 @@ def retorna_info_rede():
     # Depois, imprimir os valores:
     return info_redes
 
+
 def retorna_dados_rede_processos():
     dados_processo = []
     for i in psutil.net_connections():
@@ -113,7 +119,6 @@ def retorna_dados_rede_processos():
 
 
 def corpo(contexto):
-
     # AQUI É MONTADO O FUNDO DOS DADOS DO CPU
     s1.fill(BRANCO)
     contexto.tela.blit(s1, (0, contexto.scroll_y))
@@ -398,7 +403,6 @@ def corpo(contexto):
                 contexto.tela.blit(raddr, (350, margin))
                 contexto.tela.blit(status, (650, margin))
 
-
         with concurrent.futures.ThreadPoolExecutor() as item:
             for i in range(5):
                 if i == 0:
@@ -413,9 +417,6 @@ def corpo(contexto):
                     item.submit(carrega_dados_cpu)
 
     elif contexto.pagina == 2:
-
-        with concurrent.futures.ThreadPoolExecutor() as item:
-            lista = item.submit(retorna_dados_rede, contexto.conexao['ip'])
 
         s = "Sistema: " + str(platform.system())
         text = fonteMenor.render(s, 1, FUNDO)
@@ -433,14 +434,11 @@ def corpo(contexto):
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 60))
 
-        with concurrent.futures.ProcessPoolExecutor() as item:
-            resultado = item.submit(func01, lista)
-
-        s = "IP: " + resultado[0]
+        s = "IP: " + contexto.conexao['ipv4']
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (350, 0))
 
-        s = "MAC: " + resultado[1]
+        s = "MAC: " + contexto.conexao['mac']
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (350, 20))
 
@@ -536,6 +534,18 @@ def main():
     retorno = conexao('init')
     if retorno != '':
         contexto.conexao = retorno
+    print("Concluido ! ")
+
+    print("\nIniciando Informações Redes Local ...")
+
+    with concurrent.futures.ThreadPoolExecutor() as item:
+        lista = []
+        lista.append(item.submit(retorna_dados_rede, contexto.conexao['ip']))
+
+    ipv4, mac = funcao_complementar_rede(lista[0].result())
+    contexto.conexao['ipv4'] = ipv4
+    contexto.conexao['mac'] = mac
+
     print("Concluido ! ")
 
     while not contexto.terminou:

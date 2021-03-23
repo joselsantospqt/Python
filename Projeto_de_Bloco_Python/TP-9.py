@@ -10,6 +10,7 @@ import nmap
 import socket, sys, pickle
 import asyncio
 import aiohttp
+import concurrent.futures
 
 
 class Contexto:
@@ -36,10 +37,12 @@ def conexao(m):
         bytes = tcp.recv(4096)
         retorno = pickle.loads(bytes)
 
-        return retorno
-
         mensagem = 'fim'
         tcp.send(mensagem.encode('UTF-8'))
+
+        return retorno
+
+
 
     except Exception as erro:
         print(str(erro))
@@ -48,8 +51,9 @@ def conexao(m):
     tcp.close()
 
     input("Pressione qualquer tecla para sair...")
-def retorna_dados_rede(ip):
 
+
+def retorna_dados_rede(ip):
     return_codes = dict()
     host_validos = []
 
@@ -61,25 +65,23 @@ def retorna_dados_rede(ip):
     if return_codes[base_ip + '{0}'.format(1)] == 0:
         host_validos.append(base_ip + '{0}'.format(1))
 
+    return host_validos
+
+
+def funcao_complementar_rede(host_validos):
     vScannner = nmap.PortScanner()
     for i in host_validos:
         try:
+            print("\nCarregando Scan ...")
             vScannner.scan(i)
-            ipv4 = (vScannner[i]['addresses']['ipv4'])
-            mac =(vScannner[i]['addresses']['mac'])
+            print("\nCompleto!")
+            ipv4 = vScannner[i]['addresses']['ipv4']
+            mac = vScannner[i]['addresses']['mac']
         except:
             pass
+
     return ipv4, mac
 
-def retorna_info_rede():
-    interfaces = psutil.net_if_addrs()
-    info_redes = []
-
-    # Obtém os nomes das interfaces primeiro
-    for i in interfaces:
-        info_redes.append(str(i))
-    # Depois, imprimir os valores:
-    return info_redes
 
 def retorna_codigo_ping(hostname):
     """Usa o utilitario ping do sistema operacional para encontrar   o host. ('-c 5') indica, em sistemas linux, que deve mandar 5   pacotes. ('-W 3') indica, em sistemas linux, que deve esperar 3   milisegundos por uma resposta. Esta funcao retorna o codigo de   resposta do ping """
@@ -97,23 +99,26 @@ def retorna_codigo_ping(hostname):
                               stderr=open(os.devnull, 'w'))
     return ret_cod
 
+
+def retorna_info_rede():
+    interfaces = psutil.net_if_addrs()
+    info_redes = []
+
+    # Obtém os nomes das interfaces primeiro
+    for i in interfaces:
+        info_redes.append(str(i))
+    # Depois, imprimir os valores:
+    return info_redes
+
+
 def retorna_dados_rede_processos():
     dados_processo = []
     for i in psutil.net_connections():
         dados_processo.append(i)
     return dados_processo
 
+
 def corpo(contexto):
-
-    print("\nIniciando Conexão com o banco ...")
-    retorno = conexao('init')
-    if retorno != '':
-        contexto.conexao = retorno
-        ipv4, mac = retorna_dados_rede(retorno['ip'])
-
-    print("Concluido ! ")
-
-
     # AQUI É MONTADO O FUNDO DOS DADOS DO CPU
     s1.fill(BRANCO)
     contexto.tela.blit(s1, (0, contexto.scroll_y))
@@ -149,7 +154,8 @@ def corpo(contexto):
         pygame.draw.rect(s2, COR2, (20, 110, largura, 70))
         contexto.tela.blit(s2, (0, 300))
         total = round(contexto.conexao['memoria_total'] / (1024 * 1024 * 1024), 2)
-        texto_barra = "Uso de Memória (Total: " + str(total) + "GB) (Utilizando: " + str(contexto.conexao['memoria_percent']) + " %):"
+        texto_barra = "Uso de Memória (Total: " + str(total) + "GB) (Utilizando: " + str(
+            contexto.conexao['memoria_percent']) + " %):"
         text = fonte.render(texto_barra, 1, COR3)
         contexto.tela.blit(text, (20, 350))
 
@@ -166,8 +172,6 @@ def corpo(contexto):
         contexto.tela.blit(text, (20, 500))
 
     elif contexto.pagina == 1:
-
-        scheduler = sched.scheduler(time.time, time.sleep)
 
         def carrega_memoria():
             s = "Memória: " + str(contexto.conexao['memoria_percent']) + "%"
@@ -399,14 +403,18 @@ def corpo(contexto):
                 contexto.tela.blit(raddr, (350, margin))
                 contexto.tela.blit(status, (650, margin))
 
-        scheduler.enter(2, 1, carrega_memoria)
-        scheduler.enter(1, 1, carrega_HD)
-        scheduler.enter(1, 1, carrega_rede)
-        scheduler.enter(1, 1, carrega_info_rede)
-        scheduler.enter(4, 1, carrega_dados_cpu)
-        time.sleep(2)
-
-        scheduler.run()
+        with concurrent.futures.ThreadPoolExecutor() as item:
+            for i in range(5):
+                if i == 0:
+                    item.submit(carrega_memoria)
+                elif i == 1:
+                    item.submit(carrega_HD)
+                elif i == 2:
+                    item.submit(carrega_rede)
+                elif i == 3:
+                    item.submit(carrega_info_rede)
+                elif i == 4:
+                    item.submit(carrega_dados_cpu)
 
     elif contexto.pagina == 2:
 
@@ -426,11 +434,11 @@ def corpo(contexto):
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 60))
 
-        s = "IP: " + ipv4
+        s = "IP: " + contexto.conexao['ipv4']
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (350, 0))
 
-        s = "MAC: " + mac
+        s = "MAC: " + contexto.conexao['mac']
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (350, 20))
 
@@ -511,8 +519,10 @@ def corpo(contexto):
 
     # AQUI É MONTADO A UTILIZAÇÃO DAS MEMORIAS
 
+
 def montar_tela(contexto):
     corpo(contexto)
+
 
 def main():
     contexto = Contexto()
@@ -520,6 +530,23 @@ def main():
     clock = pygame.time.Clock()
     contexto.tela = tela
 
+    print("\nIniciando Conexão com o banco ...")
+    retorno = conexao('init')
+    if retorno != '':
+        contexto.conexao = retorno
+    print("Concluido ! ")
+
+    print("\nIniciando Informações Redes Local ...")
+
+    with concurrent.futures.ThreadPoolExecutor() as item:
+        lista = []
+        lista.append(item.submit(retorna_dados_rede, contexto.conexao['ip']))
+
+    ipv4, mac = funcao_complementar_rede(lista[0].result())
+    contexto.conexao['ipv4'] = ipv4
+    contexto.conexao['mac'] = mac
+
+    print("Concluido ! ")
 
     while not contexto.terminou:
 
@@ -553,14 +580,14 @@ def main():
                 if event.button == 4: contexto.scroll_y = min(contexto.scroll_y + 15, 0)
                 if event.button == 5: contexto.scroll_y = max(contexto.scroll_y - 15, -300)
 
-
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(30)
 
     # Finaliza a janela do jogo
     pygame.display.quit()
     # Finaliza o pygame
     pygame.quit()
+
 
 if __name__ == '__main__':
     print("\nIniciando Pygame ...")

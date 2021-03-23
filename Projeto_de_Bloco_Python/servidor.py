@@ -1,65 +1,76 @@
-import socket
+import socket, psutil, pickle
+import cpuinfo
 import os
-import pickle
-
-
-def busca_arquivo_rec(nome, dir):
-    lista_dir = []
-    lista_resp = []
-    lista_dir.append(dir)
-
-    while lista_dir:
-        dir_atual = lista_dir[0]
-        l = []
-        try:
-            l = os.listdir(dir_atual)
-        except:
-            pass
-        for i in l:
-            arq = os.path.join(dir_atual, i)
-            if os.path.isfile(arq) and i == nome:
-                lista_resp.append(arq)
-            elif os.path.isdir(arq):
-                lista_dir.append(arq)
-        lista_dir.remove(dir_atual)
-    return (lista_resp)
-
-# Definir função busca_arquivo_rec aqui
 
 # Cria o socket
-socket_servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Obtem o nome da máquina
 host = socket.gethostname()
 porta = 9999
-# Associa a porta
-socket_servidor.bind((host, porta))
-# Escutando...
-socket_servidor.listen()
+tcp.bind((host, porta))
+tcp.listen()
 
 print("Servidor de nome", host, "esperando conexão na porta", porta)
+# trocar de lista para dict
+
+
+
+(socket_cliente, addr) = tcp.accept()
+print("Conectado a:", str(addr))
+
+response = []
 while True:
-    # Aceita alguma conexão
-    (socket_cliente,addr) = socket_servidor.accept()
-    print("Conectado a:", str(addr))
-    msg = socket_cliente.recv(1024)
-    nome = msg.decode('utf-8')
-    # Procura no diretório do usuário apenas
-    dir = os.environ['HOMEPATH']
-    # Faz a busca do nome
-    lista = busca_arquivo_rec(nome, dir)
-    # Gera a lista a ser enviada:
-    # esta lista contém o caminho completo e o tamanho em bytes
-    lista_send = []
-    for path in lista:
-        tamanho = os.stat(path).st_size
-        lista_send.append((path, tamanho))
+    # Recebe pedido do cliente:
+    mensagem = socket_cliente.recv(4096)
+    reposta = mensagem.decode('UTF-8')
 
-    # Converte de lista para bytes
-    bytes = pickle.dumps(lista_send)
-    # Envia os bytes
+    # Gera a lista de resposta
+    info_cpu = cpuinfo.get_cpu_info()
+    pid = os.getpid()
+    disco = psutil.disk_usage('.')
+    memoria = psutil.virtual_memory()
+    perc_mem = psutil.cpu_percent(interval=None)
+    p = psutil.Process(pid)
+
+    if reposta == 'init':
+        response = {
+            'pid': os.getpid(),
+            'ip': socket.gethostbyname(socket.gethostname()),
+            'processador_nome': info_cpu['brand_raw'],
+            'arquitetura': info_cpu['arch'],
+            'palavra': info_cpu['bits'],
+            'frequencia': info_cpu['hz_actual_friendly'],
+            'nucleos': info_cpu['count'],
+            'cpu_nome': p.name(),
+            'temp_usuario': p.cpu_times().user,
+            'executavel': p.exe(),
+            'temp_criacao': p.create_time(),
+            'nr_threads': p.num_threads(),
+            'perc_mem': psutil.cpu_percent(),
+            'memoria_total': memoria.total,
+            'memoria_usada': memoria.available,
+            'memoria_percent': memoria.percent,
+            'cpu': psutil.cpu_percent(interval=0),
+            'disco_total': disco.total,
+            'disco_usado': disco.used,
+            'disco_percent': disco.percent
+
+        }
+
+    elif reposta == 'updateSHD':
+        response = {
+            'disco_total': disco.total,
+            'disco_usado': disco.used,
+            'disco_percent': disco.percent
+        }
+
+    elif reposta == 'fim':
+        break
+
+    bytes = pickle.dumps(response)
     socket_cliente.send(bytes)
-    # Fecha a conexão com o cliente
-    socket_cliente.close()
 
-# Fecha conexão do servidor
-socket_servidor.close()
+socket_cliente.close()
+
+input("Pressione qualquer tecla para sair...")  # Espera usu�rio ler
+

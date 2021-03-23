@@ -1,29 +1,39 @@
-import socket, sys, pickle
+import socket, time, pickle
+
+# Função que imprime a lista formatada
+def imprime(l):
+    print(f"""
+        pid: {l['pid']}
+        ip: {l['ip']}
+        mem_total: {l['memoria_total']}
+        mem_usado: {l['memoria_usada']}
+        cpu: {l['cpu']}
+        disco_total: {l['disco_total']}
+        disco_usado: {l['disco_usado']}
+        
+    """)
 
 # Cria o socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# Obtém o nome do arquivo do usuário:
-msg = input("Entre com o nome do arquivo: ")
+
 try:
-    # Tenta se conectar ao servidor que
-    # fica na mesma máquina:
+    # Tenta se conectar ao servidor
     s.connect((socket.gethostname(), 9999))
-    # Envia mensagem codificada em bytes ao servidor
-    s.send(msg.encode('utf-8'))
-    # Recebe até 100000 bytes
-    bytes = s.recv(100000)
+    msg = ' '
+    for i in range(10):
+        # Envia mensagem vazia apenas para indicar a requisição
+        s.send(msg.encode('ascii'))
+        bytes = s.recv(1024)
+        # Converte os bytes para lista
+        dicionario = pickle.loads(bytes)
+        imprime(dicionario)
+        time.sleep(2)
+    msg = 'fim'
+    s.send(msg.encode('ascii'))
 except Exception as erro:
     print(str(erro))
-    sys.exit(1) # Termina o programa
-# Converte de bytes para lista
-lista = pickle.loads(bytes)
-# Apresenta o resultado:
-if lista:
-    for i in lista:
-        print(i[0], i[1], "bytes")
-else:
-    print("Arquivo não encontrado...")
-print("Terminou a busca no servidor...")
-input("Pressione qualquer tecla para sair...")
-# Fecha conexão com o servidor
+
+# Fecha o socket
 s.close()
+
+input("Pressione qualquer tecla para sair...")

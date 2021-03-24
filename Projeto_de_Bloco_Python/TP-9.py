@@ -29,6 +29,7 @@ def update_conexao(contexto):
     contexto.conexao['memoria_usada'] = atualiza['memoria_usada']
     contexto.conexao['memoria_percent'] = atualiza['memoria_percent']
     contexto.conexao['perc_mem'] = atualiza['perc_mem']
+    contexto.conexao['dados_processos'] = atualiza['dados_processos']
 
 def atualiza_servidor():
     try:
@@ -55,18 +56,12 @@ def conexao(m):
         bytes = update.recv(50000)
         retorno = pickle.loads(bytes)
 
-        #mensagem = 'fim'
-        #update.send(mensagem.encode('UTF-8'))
-
         return retorno
 
 
 
     except Exception as erro:
         print(str(erro))
-
-    # Fecha o socket
-    #tcp.close()
 
     input("Pressione qualquer tecla para sair...")
 
@@ -89,14 +84,11 @@ def retorna_dados_rede(ip):
 def funcao_complementar_rede(host_validos):
     vScannner = nmap.PortScanner()
     for i in host_validos:
-        try:
-            print("\nCarregando Scan ...")
-            vScannner.scan(i)
-            print("\nCompleto!")
-            ipv4 = vScannner[i]['addresses']['ipv4']
-            mac = vScannner[i]['addresses']['mac']
-        except:
-            pass
+        print("\nCarregando Scan ...")
+        vScannner.scan(i)
+        print("\nCompleto!")
+        ipv4 = vScannner[i]['addresses']['ipv4']
+        mac = vScannner[i]['addresses']['mac']
 
     return ipv4, mac
 
@@ -145,6 +137,13 @@ def corpo(contexto):
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 80))
 
+        s = "TEXTO AQUI"
+        text = fonteMenor.render(s, 1, FUNDO)
+        contexto.tela.blit(text, (20, 100))
+
+        #a tela 2 eu acho que ta com dificuldade de aparecer. Mas nao entendi porque aocntece isso kkk
+
+
         # AQUI É MONTADO A UTILIZAÇÃO DAS MEMORIAS
         largura = contexto.largura_tela - 2 * 20
         s2.fill(FUNDO)
@@ -155,7 +154,7 @@ def corpo(contexto):
         contexto.tela.blit(s2, (0, 300))
         total = round(contexto.conexao['memoria_total'] / (1024 * 1024 * 1024), 2)
         texto_barra = "Uso de Memória (Total: " + str(total) + "GB) (Utilizando: " + str(
-            contexto.conexao['memoria_percent']) + " %):"
+        contexto.conexao['memoria_percent']) + " %):"
         text = fonte.render(texto_barra, 1, COR3)
         contexto.tela.blit(text, (20, 350))
 
@@ -590,7 +589,7 @@ if __name__ == '__main__':
 
     fonte = pygame.font.Font('C:\\Windows\\Fonts\\Arial.ttf', 28)
     fonteMenor = pygame.font.Font('C:\\Windows\\Fonts\\Calibri.ttf', 17)
-    pygame.display.set_caption("Gerenciador de tarefas TP-4.")
+    pygame.display.set_caption("Gerenciador de tarefas")
     update = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     BRANCO = (255, 255, 255)
@@ -601,6 +600,8 @@ if __name__ == '__main__':
     COR3 = (46, 255, 0)
     COR4 = (244, 67, 54)
 
+
+    #PRIMEIRO CHAMA ESSES AQUI
     s1 = pygame.surface.Surface((1024, 600 / 4))
     s2 = pygame.surface.Surface((1024, 600 / 4))
     s3 = pygame.surface.Surface((1024, 600 / 4))

@@ -13,7 +13,6 @@ tcp.listen()
 print("Servidor de nome", host, "esperando conexão na porta", porta)
 # trocar de lista para dict
 
-
 (socket_cliente, addr) = tcp.accept()
 print("Conectado a:", str(addr))
 
@@ -28,7 +27,7 @@ while True:
     pid = os.getpid()
     disco = psutil.disk_usage('.')
     memoria = psutil.virtual_memory()
-    perc_mem = psutil.cpu_percent(interval=None)
+    perc_mem = psutil.cpu_percent(interval=1)
     p = psutil.Process(pid)
     interfaces = psutil.net_if_addrs()
 
@@ -62,8 +61,6 @@ while True:
 
         }
 
-
-
         # Obtém os nomes das interfaces primeiro
         for i in interfaces:
             response['info-rede'].append(str(i))
@@ -87,11 +84,15 @@ while True:
         response = {
             'memoria_usada': memoria.available,
             'memoria_percent': memoria.percent,
-            'perc_mem': psutil.cpu_percent()
+            'perc_mem': psutil.cpu_percent(),
+            'dados_processos': [],
         }
+        # Obtém os dados de processo do computador
+        for i in psutil.net_connections():
+            response['dados_processos'].append(i)
+
+
     elif reposta == 'fim':
-        break
-    elif reposta == b'':
         break
 
     bytes = pickle.dumps(response)

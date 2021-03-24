@@ -34,7 +34,7 @@ def conexao(m):
         mensagem = m
         tcp.send(mensagem.encode('UTF-8'))
 
-        bytes = tcp.recv(4096)
+        bytes = tcp.recv(50000)
         retorno = pickle.loads(bytes)
 
         mensagem = 'fim'
@@ -456,15 +456,23 @@ def corpo(contexto):
             text = fonteMenor.render(titulo, 1, BRANCO)
             contexto.tela.blit(text, (490, margin))
 
+            dic = {}
+            for i in contexto.conexao['lista_arq']:
+                    index = contexto.conexao['lista_arq'].index(i)
+                    dic[i] = []
+                    for j in contexto.conexao['dic'][index]:
+                        dic[i].append(j)
+
+
             # AQUI FORMATO E PREENCHO VÁRIAVEIS ANTES DE EXIBIR NA TELA
-            for i in contexto.conexao['dic']:
+            for i in dic:
                 margin += 20
                 nome = fonteMenor.render(i, 1, BRANCO)
-                kb = (contexto.conexao['dic'][i][0] / 1000)
+                kb = (dic[i][0] / 1000)
                 formataTamanho = '{:10}'.format(str('{:.2f}'.format(kb) + ' KB'))
                 tamanho = fonteMenor.render(formataTamanho, 1, BRANCO)
-                criacao = fonteMenor.render(str(time.ctime(contexto.conexao['dic'][i][1])), 1, BRANCO)
-                modificacao = fonteMenor.render(str(time.ctime(contexto.conexao['dic'][i][2])), 1, BRANCO)
+                criacao = fonteMenor.render(str(time.ctime(dic[i][1])), 1, BRANCO)
+                modificacao = fonteMenor.render(str(time.ctime(dic[i][2])), 1, BRANCO)
 
                 contexto.tela.blit(nome, (5, margin))
                 contexto.tela.blit(tamanho, (150, margin))

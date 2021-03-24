@@ -20,7 +20,7 @@ print("Conectado a:", str(addr))
 response = []
 while True:
     # Recebe pedido do cliente:
-    mensagem = socket_cliente.recv(4096)
+    mensagem = socket_cliente.recv(50000)
     reposta = mensagem.decode('UTF-8')
 
     # Gera a lista de resposta
@@ -54,7 +54,10 @@ while True:
             'disco_usado': disco.used,
             'disco_percent': disco.percent,
             'info-rede': [],
-            'dados_processos': []
+            'dados_processos': [],
+            'lista_arq': [],
+            'lista_dir': [],
+            'dic': []
 
         }
 
@@ -65,15 +68,9 @@ while True:
             response['info-rede'].append(str(i))
 
         # Obtém os dados de processo do computador
-        # for i in psutil.net_connections():
-        #     response['dados_processos'].append(i)
+        for i in psutil.net_connections():
+            response['dados_processos'].append(i)
 
-    elif reposta == "listaArquiDoc":
-        response = {
-            'lista_arq': [],
-            'lista_dir': [],
-            'dic': []
-        }
         # AQUI CARREGO OS ARQUIVOS DO DIRETORIO
         lista = os.listdir()
         for i in lista:
@@ -84,6 +81,7 @@ while True:
                 response['dic'].append(dic)
             else:
                 response['lista_dir'].append(i)
+
     elif reposta == 'updateSHD':
         response = {
             'disco_total': disco.total,
@@ -91,9 +89,9 @@ while True:
             'disco_percent': disco.percent
         }
     elif reposta == 'fim':
-        continue
+        break
     elif reposta == b'':
-        break;
+        break
 
     bytes = pickle.dumps(response)
     socket_cliente.send(bytes)

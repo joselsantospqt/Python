@@ -24,21 +24,39 @@ class Contexto:
     scroll_y = 0
     conexao = None
 
+def update_conexao(contexto):
+    atualiza = atualiza_servidor()
+    contexto.conexao['memoria_usada'] = atualiza['memoria_usada']
+    contexto.conexao['memoria_percent'] = atualiza['memoria_percent']
+    contexto.conexao['perc_mem'] = atualiza['perc_mem']
+
+def atualiza_servidor():
+    try:
+        m = 'requestUpdate'
+        update.send(m.encode('UTF-8'))
+
+        bytes = update.recv(50000)
+        atualizou = pickle.loads(bytes)
+
+        return atualizou
+
+    except Exception as erro:
+        print(str(erro))
+
 
 def conexao(m):
-    tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         # Tenta se conectar ao servidor
-        tcp.connect((socket.gethostname(), 9999))
+        update.connect((socket.gethostname(), 9999))
 
         mensagem = m
-        tcp.send(mensagem.encode('UTF-8'))
+        update.send(mensagem.encode('UTF-8'))
 
-        bytes = tcp.recv(50000)
+        bytes = update.recv(50000)
         retorno = pickle.loads(bytes)
 
-        mensagem = 'fim'
-        tcp.send(mensagem.encode('UTF-8'))
+        #mensagem = 'fim'
+        #update.send(mensagem.encode('UTF-8'))
 
         return retorno
 
@@ -48,7 +66,7 @@ def conexao(m):
         print(str(erro))
 
     # Fecha o socket
-    tcp.close()
+    #tcp.close()
 
     input("Pressione qualquer tecla para sair...")
 
@@ -158,7 +176,7 @@ def corpo(contexto):
         def carrega_memoria():
             s = "Memória: " + str(contexto.conexao['memoria_percent']) + "%"
             text = fonteMenor.render(s, 1, FUNDO)
-            contexto.tela.blit(text, (20, 0))
+            contexto.tela.blit(text, (20, 0 ))
             print('ESCALONADAS DA FUNÇÃO - carrega_memoria:', time.ctime())
 
         def carrega_HD():
@@ -223,7 +241,7 @@ def corpo(contexto):
             margin = 160
             titulo = " Informações de redes: "
             text = fonteMenor.render(titulo, 1, BRANCO)
-            contexto.tela.blit(text, (5, margin))
+            contexto.tela.blit(text, (5, margin + contexto.scroll_y))
 
             # AQUI FORMATO E PREENCHO VÁRIAVEIS ANTES DE EXIBIR NA TELA
 
@@ -353,25 +371,25 @@ def corpo(contexto):
             margin = 500
             titulo = " Informações de dados de Processo: "
             text = fonteMenor.render(titulo, 1, BRANCO)
-            contexto.tela.blit(text, (5, margin))
+            contexto.tela.blit(text, (5, margin + contexto.scroll_y))
 
             margin += 25
 
             titulo = "PID: "
             text = fonteMenor.render(titulo, 1, BRANCO)
-            contexto.tela.blit(text, (10, margin))
+            contexto.tela.blit(text, (10, margin + contexto.scroll_y))
 
             titulo = "Laddr - Address: "
             text = fonteMenor.render(titulo, 1, BRANCO)
-            contexto.tela.blit(text, (100, margin))
+            contexto.tela.blit(text, (100, margin + contexto.scroll_y))
 
             titulo = "Raddr - Address: "
             text = fonteMenor.render(titulo, 1, BRANCO)
-            contexto.tela.blit(text, (350, margin))
+            contexto.tela.blit(text, (350, margin + contexto.scroll_y))
 
             titulo = "Status: "
             text = fonteMenor.render(titulo, 1, BRANCO)
-            contexto.tela.blit(text, (650, margin))
+            contexto.tela.blit(text, (650, margin + contexto.scroll_y))
 
             for i in dados_processo:
                 pid = fonteMenor.render(str(i.pid), 1, BRANCO)
@@ -380,10 +398,10 @@ def corpo(contexto):
                 status = fonteMenor.render(str(i.status), 1, BRANCO)
 
                 margin += 25
-                contexto.tela.blit(pid, (10, margin))
-                contexto.tela.blit(laddr, (100, margin))
-                contexto.tela.blit(raddr, (350, margin))
-                contexto.tela.blit(status, (650, margin))
+                contexto.tela.blit(pid, (10, margin + contexto.scroll_y))
+                contexto.tela.blit(laddr, (100, margin + contexto.scroll_y))
+                contexto.tela.blit(raddr, (350, margin + contexto.scroll_y))
+                contexto.tela.blit(status, (650, margin + contexto.scroll_y))
 
         with concurrent.futures.ThreadPoolExecutor() as item:
             for i in range(5):
@@ -529,6 +547,7 @@ def main():
         tela.fill(FUNDO)
 
         montar_tela(contexto)
+        update_conexao(contexto)
 
         # Checar os eventos do usuario:
         for event in pygame.event.get():
@@ -550,6 +569,8 @@ def main():
             if event.type == pygame.QUIT:
                 contexto.terminou = True
 
+                update.close()
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 4: contexto.scroll_y = min(contexto.scroll_y + 15, 0)
                 if event.button == 5: contexto.scroll_y = max(contexto.scroll_y - 15, -300)
@@ -570,6 +591,7 @@ if __name__ == '__main__':
     fonte = pygame.font.Font('C:\\Windows\\Fonts\\Arial.ttf', 28)
     fonteMenor = pygame.font.Font('C:\\Windows\\Fonts\\Calibri.ttf', 17)
     pygame.display.set_caption("Gerenciador de tarefas TP-4.")
+    update = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     BRANCO = (255, 255, 255)
     FUNDO = (0, 0, 0)

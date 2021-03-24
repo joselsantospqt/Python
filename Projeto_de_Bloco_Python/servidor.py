@@ -30,6 +30,7 @@ while True:
     memoria = psutil.virtual_memory()
     perc_mem = psutil.cpu_percent(interval=None)
     p = psutil.Process(pid)
+    interfaces = psutil.net_if_addrs()
 
     if reposta == 'init':
         response = {
@@ -49,7 +50,7 @@ while True:
             'memoria_total': memoria.total,
             'memoria_usada': memoria.available,
             'memoria_percent': memoria.percent,
-            'cpu': psutil.cpu_percent(interval=0),
+            'cpu': psutil.cpu_percent(interval=1),
             'disco_total': disco.total,
             'disco_usado': disco.used,
             'disco_percent': disco.percent,
@@ -57,11 +58,11 @@ while True:
             'dados_processos': [],
             'lista_arq': [],
             'lista_dir': [],
-            'dic': []
+            'dic': [],
 
         }
 
-        interfaces = psutil.net_if_addrs()
+
 
         # Obtém os nomes das interfaces primeiro
         for i in interfaces:
@@ -82,11 +83,11 @@ while True:
             else:
                 response['lista_dir'].append(i)
 
-    elif reposta == 'updateSHD':
+    elif reposta == 'requestUpdate':
         response = {
-            'disco_total': disco.total,
-            'disco_usado': disco.used,
-            'disco_percent': disco.percent
+            'memoria_usada': memoria.available,
+            'memoria_percent': memoria.percent,
+            'perc_mem': psutil.cpu_percent()
         }
     elif reposta == 'fim':
         break

@@ -11,6 +11,7 @@ import socket, sys, pickle
 import asyncio
 import aiohttp
 import concurrent.futures
+import time
 
 
 class Contexto:
@@ -24,12 +25,45 @@ class Contexto:
     scroll_y = 0
     conexao = None
 
+
+class Button():
+    def __init__(self, color, x, y, width, height, text=''):
+        self.color = color
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.text = text
+
+    def draw(self, win, outline=None):
+        # Call this method to draw the button on the screen
+        if outline:
+            pygame.draw.rect(win, outline, (self.x - 2, self.y - 2, self.width + 4, self.height + 4), 0)
+
+        pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height), 0)
+
+        if self.text != '':
+            font = pygame.font.Font("C:\\Windows\\Fonts\\Arial.ttf", 10)
+            text = font.render(self.text, 1, (0, 0, 0))
+            win.blit(text, (self.x + (self.width / 2 - text.get_width() / 2),
+                            self.y + (self.height / 2 - text.get_height() / 2)))
+
+    def isOver(self, pos):
+        # Pos is the mouse position or a tuple of (x,y) coordinates
+        if pos[0] > self.x and pos[0] < self.x + self.width:
+            if pos[1] > self.y and pos[1] < self.y + self.height:
+                return True
+
+        return False
+
+
 def update_conexao(contexto):
     atualiza = atualiza_servidor()
     contexto.conexao['memoria_usada'] = atualiza['memoria_usada']
     contexto.conexao['memoria_percent'] = atualiza['memoria_percent']
     contexto.conexao['perc_mem'] = atualiza['perc_mem']
     contexto.conexao['dados_processos'] = atualiza['dados_processos']
+
 
 def atualiza_servidor():
     try:
@@ -113,6 +147,11 @@ def retorna_codigo_ping(hostname):
 def corpo(contexto):
     # AQUI É MONTADO O FUNDO DOS DADOS DO CPU
     s1.fill(BRANCO)
+
+    # IMPRIMIR OS BOTÕES NA TELA S1
+    botao_avancar.draw(s1, (0, 0, 0))
+    botao_voltar.draw(s1, (0, 0, 0))
+    # UPDATE TELA S1
     contexto.tela.blit(s1, (0, contexto.scroll_y))
 
     # AQUI É MONTADO A PÁGINAÇÃO
@@ -137,18 +176,12 @@ def corpo(contexto):
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (20, 80))
 
-        s = "TEXTO AQUI"
-        text = fonteMenor.render(s, 1, FUNDO)
-        contexto.tela.blit(text, (20, 100))
-
-        #a tela 2 eu acho que ta com dificuldade de aparecer. Mas nao entendi porque aocntece isso kkk
-
-
         # AQUI É MONTADO A UTILIZAÇÃO DAS MEMORIAS
         largura = contexto.largura_tela - 2 * 20
         s2.fill(FUNDO)
         pygame.draw.rect(s2, COR1, (20, 110, largura, 70))
         contexto.tela.blit(s2, (0, 300))
+
         largura = largura * contexto.conexao['memoria_percent'] / 100
         pygame.draw.rect(s2, COR2, (20, 110, largura, 70))
         contexto.tela.blit(s2, (0, 300))
@@ -171,11 +204,10 @@ def corpo(contexto):
         contexto.tela.blit(text, (20, 500))
 
     elif contexto.pagina == 1:
-
         def carrega_memoria():
             s = "Memória: " + str(contexto.conexao['memoria_percent']) + "%"
             text = fonteMenor.render(s, 1, FUNDO)
-            contexto.tela.blit(text, (20, 0 ))
+            contexto.tela.blit(text, (20, 0))
             print('ESCALONADAS DA FUNÇÃO - carrega_memoria:', time.ctime())
 
         def carrega_HD():
@@ -441,7 +473,6 @@ def corpo(contexto):
         text = fonteMenor.render(s, 1, FUNDO)
         contexto.tela.blit(text, (350, 20))
 
-
         # AQUI É MONTADO A EXIBIÇÃO DO DIRETORIO
         if len(contexto.conexao['lista_arq']) > 0:
             titulo = "Arquivos: "
@@ -475,11 +506,10 @@ def corpo(contexto):
 
             dic = {}
             for i in contexto.conexao['lista_arq']:
-                    index = contexto.conexao['lista_arq'].index(i)
-                    dic[i] = []
-                    for j in contexto.conexao['dic'][index]:
-                        dic[i].append(j)
-
+                index = contexto.conexao['lista_arq'].index(i)
+                dic[i] = []
+                for j in contexto.conexao['dic'][index]:
+                    dic[i].append(j)
 
             # AQUI FORMATO E PREENCHO VÁRIAVEIS ANTES DE EXIBIR NA TELA
             for i in dic:
@@ -565,6 +595,15 @@ def main():
                     if contexto.pagina <= 1:
                         contexto.pagina += 1
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if botao_avancar.isOver(pos):
+                    if contexto.pagina <= 1:
+                        contexto.pagina += 1
+
+                if botao_voltar.isOver(pos):
+                    if contexto.pagina > 0:
+                        contexto.pagina -= 1
+
             if event.type == pygame.QUIT:
                 contexto.terminou = True
 
@@ -575,7 +614,7 @@ def main():
                 if event.button == 5: contexto.scroll_y = max(contexto.scroll_y - 15, -300)
 
         pygame.display.flip()
-        clock.tick(30)
+        clock.tick(120)
 
     # Finaliza a janela do jogo
     pygame.display.quit()
@@ -600,8 +639,11 @@ if __name__ == '__main__':
     COR3 = (46, 255, 0)
     COR4 = (244, 67, 54)
 
+    # BOTÕES
+    botao_avancar = Button(BRANCO, 800, 20, 180, 40, 'AVANÇAR')
+    botao_voltar = Button(BRANCO, 800, 80, 180, 40, 'VOLTAR')
 
-    #PRIMEIRO CHAMA ESSES AQUI
+    # PRIMEIRO CHAMA ESSES AQUI
     s1 = pygame.surface.Surface((1024, 600 / 4))
     s2 = pygame.surface.Surface((1024, 600 / 4))
     s3 = pygame.surface.Surface((1024, 600 / 4))

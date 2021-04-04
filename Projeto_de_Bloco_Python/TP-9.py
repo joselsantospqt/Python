@@ -575,8 +575,9 @@ def main():
         pygame.display.update()
         tela.fill(FUNDO)
 
-        montar_tela(contexto)
         update_conexao(contexto)
+        montar_tela(contexto)
+
 
         # Checar os eventos do usuario:
         for event in pygame.event.get():

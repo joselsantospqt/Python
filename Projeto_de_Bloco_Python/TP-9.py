@@ -147,12 +147,18 @@ def retorna_codigo_ping(hostname):
 def corpo(contexto):
     # AQUI É MONTADO O FUNDO DOS DADOS DO CPU
     s1.fill(BRANCO)
+    s4.fill(FUNDO)
 
     # IMPRIMIR OS BOTÕES NA TELA S1
     botao_avancar.draw(s1, (0, 0, 0))
     botao_voltar.draw(s1, (0, 0, 0))
+    botao_topo.draw(s4, (255, 255, 255))
     # UPDATE TELA S1
     contexto.tela.blit(s1, (0, contexto.scroll_y))
+    # UPDATE TELA S4
+    contexto.tela.blit(s4, (0, 800))
+
+
 
     # AQUI É MONTADO A PÁGINAÇÃO
     if contexto.pagina == 0:
@@ -179,6 +185,7 @@ def corpo(contexto):
         # AQUI É MONTADO A UTILIZAÇÃO DAS MEMORIAS
         largura = contexto.largura_tela - 2 * 20
         s2.fill(FUNDO)
+
         pygame.draw.rect(s2, COR1, (20, 110, largura, 70))
         contexto.tela.blit(s2, (0, 300))
 
@@ -204,22 +211,23 @@ def corpo(contexto):
         contexto.tela.blit(text, (20, 500))
 
     elif contexto.pagina == 1:
+
         def carrega_memoria():
             s = "Memória: " + str(contexto.conexao['memoria_percent']) + "%"
             text = fonteMenor.render(s, 1, FUNDO)
-            contexto.tela.blit(text, (20, 0))
+            contexto.tela.blit(text, (20, 0 + contexto.scroll_y))
             print('ESCALONADAS DA FUNÇÃO - carrega_memoria:', time.ctime())
 
         def carrega_HD():
             s = "HD: " + str(contexto.conexao['disco_percent']) + "%"
             text = fonteMenor.render(s, 1, FUNDO)
-            contexto.tela.blit(text, (20, 20))
+            contexto.tela.blit(text, (20, 20 + contexto.scroll_y))
             print('ESCALONADAS DA FUNÇÃO - carrega_HD:', time.ctime())
 
         def carrega_rede():
             s = "IP: " + str(contexto.conexao['ip'])
             text = fonteMenor.render(s, 1, FUNDO)
-            contexto.tela.blit(text, (20, 40))
+            contexto.tela.blit(text, (20, 40 + contexto.scroll_y))
             print('ESCALONADAS DA FUNÇÃO - carrega_rede:', time.ctime())
 
         def carrega_dados_cpu():
@@ -228,33 +236,33 @@ def corpo(contexto):
 
             s = "Nome: " + str(contexto.conexao['cpu_nome'])
             text = fonteMenor.render(s, 1, FUNDO)
-            contexto.tela.blit(text, (20, 60))
+            contexto.tela.blit(text, (20, 60 + contexto.scroll_y))
 
             s = "Tempo de usuário: " + str(contexto.conexao['temp_usuario'])
             text = fonteMenor.render(s, 1, FUNDO)
-            contexto.tela.blit(text, (20, 80))
+            contexto.tela.blit(text, (20, 80 + contexto.scroll_y))
 
             s = "Executável: " + str(contexto.conexao['executavel'])
             text = fonteMenor.render(s, 1, FUNDO)
-            contexto.tela.blit(text, (20, 100))
+            contexto.tela.blit(text, (20, 100 + contexto.scroll_y))
 
             s = "Tempo de criação: " + str(time.ctime(contexto.conexao['temp_criacao']))
             text = fonteMenor.render(s, 1, FUNDO)
-            contexto.tela.blit(text, (350, 0))
+            contexto.tela.blit(text, (350, 0 + contexto.scroll_y))
 
             s = "Número de threads: " + str(contexto.conexao['nr_threads'])
             text = fonteMenor.render(s, 1, FUNDO)
-            contexto.tela.blit(text, (350, 20))
+            contexto.tela.blit(text, (350, 20 + contexto.scroll_y))
 
             perc_mem = '{:6.2f}'.format(contexto.conexao['perc_mem'])
             s = "Percentual de uso de CPU: " + str(perc_mem) + "%"
             text = fonteMenor.render(s, 1, FUNDO)
-            contexto.tela.blit(text, (350, 40))
+            contexto.tela.blit(text, (350, 40 + contexto.scroll_y))
 
             mem = '{:6.2f}'.format(contexto.conexao['memoria_percent'])
             s = "Uso de memória: " + str(mem) + "MB"
             text = fonteMenor.render(s, 1, FUNDO)
-            contexto.tela.blit(text, (350, 60))
+            contexto.tela.blit(text, (350, 60 + contexto.scroll_y))
             time.sleep(2)
 
             print('ESCALONADAS DA FUNÇÃO - carrega_dados_cpu:', time.ctime())
@@ -280,38 +288,38 @@ def corpo(contexto):
                 io_status = psutil.net_io_counters(pernic=True)
                 margin += 30
                 nome = fonteMenor.render(i + " :", 1, BRANCO)
-                contexto.tela.blit(nome, (10, margin))
+                contexto.tela.blit(nome, (10, margin + contexto.scroll_y))
 
                 if i == 'Ethernet':
                     margin += 25
 
                     titulo = "IP: "
                     text = fonteMenor.render(titulo, 1, BRANCO)
-                    contexto.tela.blit(text, (10, margin))
+                    contexto.tela.blit(text, (10, margin + contexto.scroll_y))
 
                     titulo = "Gateway: "
                     text = fonteMenor.render(titulo, 1, BRANCO)
-                    contexto.tela.blit(text, (130, margin))
+                    contexto.tela.blit(text, (130, margin + contexto.scroll_y))
 
                     titulo = "Máscara: "
                     text = fonteMenor.render(titulo, 1, BRANCO)
-                    contexto.tela.blit(text, (300, margin))
+                    contexto.tela.blit(text, (300, margin + contexto.scroll_y))
 
                     titulo = "Dados Enviados: "
                     text = fonteMenor.render(titulo, 1, BRANCO)
-                    contexto.tela.blit(text, (430, margin))
+                    contexto.tela.blit(text, (430, margin + contexto.scroll_y))
 
                     titulo = "Dados Recebidos: "
                     text = fonteMenor.render(titulo, 1, BRANCO)
-                    contexto.tela.blit(text, (580, margin))
+                    contexto.tela.blit(text, (580, margin + contexto.scroll_y))
 
                     titulo = "Pacotes Enviados: "
                     text = fonteMenor.render(titulo, 1, BRANCO)
-                    contexto.tela.blit(text, (725, margin))
+                    contexto.tela.blit(text, (725, margin + contexto.scroll_y))
 
                     titulo = "Pacotes Recebidos: "
                     text = fonteMenor.render(titulo, 1, BRANCO)
-                    contexto.tela.blit(text, (880, margin))
+                    contexto.tela.blit(text, (880, margin + contexto.scroll_y))
 
                     for j in interfaces[i]:
 
@@ -330,13 +338,13 @@ def corpo(contexto):
                     pc_recebido = fonteMenor.render(str(io_status[i].packets_recv) + ' bytes', 1, BRANCO)
 
                     margin += 25
-                    contexto.tela.blit(ip01, (10, margin))
-                    contexto.tela.blit(gateway, (130, margin))
-                    contexto.tela.blit(mascara, (300, margin))
-                    contexto.tela.blit(db_enviado, (430, margin))
-                    contexto.tela.blit(db_recebido, (580, margin))
-                    contexto.tela.blit(pc_enviado, (725, margin))
-                    contexto.tela.blit(pc_recebido, (880, margin))
+                    contexto.tela.blit(ip01, (10, margin + contexto.scroll_y))
+                    contexto.tela.blit(gateway, (130, margin + contexto.scroll_y))
+                    contexto.tela.blit(mascara, (300, margin + contexto.scroll_y))
+                    contexto.tela.blit(db_enviado, (430, margin + contexto.scroll_y))
+                    contexto.tela.blit(db_recebido, (580, margin + contexto.scroll_y))
+                    contexto.tela.blit(pc_enviado, (725, margin + contexto.scroll_y))
+                    contexto.tela.blit(pc_recebido, (880, margin + contexto.scroll_y))
 
                     margin += 25
 
@@ -346,31 +354,31 @@ def corpo(contexto):
 
                     titulo = "IP: "
                     text = fonteMenor.render(titulo, 1, BRANCO)
-                    contexto.tela.blit(text, (10, margin))
+                    contexto.tela.blit(text, (10, margin + contexto.scroll_y))
 
                     titulo = "Gateway: "
                     text = fonteMenor.render(titulo, 1, BRANCO)
-                    contexto.tela.blit(text, (130, margin))
+                    contexto.tela.blit(text, (130, margin + contexto.scroll_y))
 
                     titulo = "Máscara: "
                     text = fonteMenor.render(titulo, 1, BRANCO)
-                    contexto.tela.blit(text, (300, margin))
+                    contexto.tela.blit(text, (300, margin + contexto.scroll_y))
 
                     titulo = "Dados Enviados: "
                     text = fonteMenor.render(titulo, 1, BRANCO)
-                    contexto.tela.blit(text, (430, margin))
+                    contexto.tela.blit(text, (430, margin + contexto.scroll_y))
 
                     titulo = "Dados Recebidos: "
                     text = fonteMenor.render(titulo, 1, BRANCO)
-                    contexto.tela.blit(text, (580, margin))
+                    contexto.tela.blit(text, (580, margin + contexto.scroll_y))
 
                     titulo = "Pacotes Enviados: "
                     text = fonteMenor.render(titulo, 1, BRANCO)
-                    contexto.tela.blit(text, (725, margin))
+                    contexto.tela.blit(text, (725, margin + contexto.scroll_y))
 
                     titulo = "Pacotes Recebidos: "
                     text = fonteMenor.render(titulo, 1, BRANCO)
-                    contexto.tela.blit(text, (880, margin))
+                    contexto.tela.blit(text, (880, margin + contexto.scroll_y))
 
                     for j in interfaces[i]:
                         if str(j.family) == 'AddressFamily.AF_INET':
@@ -389,13 +397,13 @@ def corpo(contexto):
                     pc_recebido = fonteMenor.render(str(io_status[i].packets_recv) + ' bytes', 1, BRANCO)
 
                     margin += 25
-                    contexto.tela.blit(ip01, (10, margin))
-                    contexto.tela.blit(gateway, (130, margin))
-                    contexto.tela.blit(mascara, (300, margin))
-                    contexto.tela.blit(db_enviado, (430, margin))
-                    contexto.tela.blit(db_recebido, (580, margin))
-                    contexto.tela.blit(pc_enviado, (725, margin))
-                    contexto.tela.blit(pc_recebido, (880, margin))
+                    contexto.tela.blit(ip01, (10, margin + contexto.scroll_y))
+                    contexto.tela.blit(gateway, (130, margin + contexto.scroll_y))
+                    contexto.tela.blit(mascara, (300, margin + contexto.scroll_y))
+                    contexto.tela.blit(db_enviado, (430, margin + contexto.scroll_y))
+                    contexto.tela.blit(db_recebido, (580, margin + contexto.scroll_y))
+                    contexto.tela.blit(pc_enviado, (725, margin + contexto.scroll_y))
+                    contexto.tela.blit(pc_recebido, (880, margin + contexto.scroll_y))
 
                     margin += 25
 
@@ -605,6 +613,9 @@ def main():
                     if contexto.pagina > 0:
                         contexto.pagina -= 1
 
+                if botao_topo.isOver(pos):
+                    contexto.scroll_y = 0
+
             if event.type == pygame.QUIT:
                 contexto.terminou = True
 
@@ -643,6 +654,7 @@ if __name__ == '__main__':
     # BOTÕES
     botao_avancar = Button(BRANCO, 800, 20, 180, 40, 'AVANÇAR')
     botao_voltar = Button(BRANCO, 800, 80, 180, 40, 'VOLTAR')
+    botao_topo = Button(BRANCO, 800, 40, 180, 40, 'TOPO')
 
     # PRIMEIRO CHAMA ESSES AQUI
     s1 = pygame.surface.Surface((1024, 600 / 4))

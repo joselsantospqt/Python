@@ -13,15 +13,13 @@ tcp.listen()
 print("Servidor de nome", host, "esperando conexão na porta", porta)
 # trocar de lista para dict
 
-
-
 (socket_cliente, addr) = tcp.accept()
 print("Conectado a:", str(addr))
 
 response = []
 while True:
     # Recebe pedido do cliente:
-    mensagem = socket_cliente.recv(4096)
+    mensagem = socket_cliente.recv(50000)
     reposta = mensagem.decode('UTF-8')
 
     # Gera a lista de resposta
@@ -29,8 +27,9 @@ while True:
     pid = os.getpid()
     disco = psutil.disk_usage('.')
     memoria = psutil.virtual_memory()
-    perc_mem = psutil.cpu_percent(interval=None)
+    perc_mem = psutil.cpu_percent(interval=1)
     p = psutil.Process(pid)
+    interfaces = psutil.net_if_addrs()
 
     if reposta == 'init':
         response = {
@@ -50,19 +49,48 @@ while True:
             'memoria_total': memoria.total,
             'memoria_usada': memoria.available,
             'memoria_percent': memoria.percent,
-            'cpu': psutil.cpu_percent(interval=0),
+            'cpu': psutil.cpu_percent(interval=1),
             'disco_total': disco.total,
             'disco_usado': disco.used,
-            'disco_percent': disco.percent
+            'disco_percent': disco.percent,
+            'info-rede': [],
+            'dados_processos': [],
+            'lista_arq': [],
+            'lista_dir': [],
+            'dic': [],
 
         }
 
-    elif reposta == 'updateSHD':
+        # Obtém os nomes das interfaces primeiro
+        for i in interfaces:
+            response['info-rede'].append(str(i))
+
+        # Obtém os dados de processo do computador
+        for i in psutil.net_connections():
+            response['dados_processos'].append(i)
+
+        # AQUI CARREGO OS ARQUIVOS DO DIRETORIO
+        lista = os.listdir()
+        for i in lista:
+            dic = []
+            if os.path.isfile(i):
+                response['lista_arq'].append(i)
+                dic.extend([os.stat(i).st_size, os.stat(i).st_atime, os.stat(i).st_mtime])
+                response['dic'].append(dic)
+            else:
+                response['lista_dir'].append(i)
+
+    elif reposta == 'requestUpdate':
         response = {
-            'disco_total': disco.total,
-            'disco_usado': disco.used,
-            'disco_percent': disco.percent
+            'memoria_usada': memoria.available,
+            'memoria_percent': memoria.percent,
+            'perc_mem': psutil.cpu_percent(),
+            'dados_processos': [],
         }
+        # Obtém os dados de processo do computador
+        for i in psutil.net_connections():
+            response['dados_processos'].append(i)
+
 
     elif reposta == 'fim':
         break
@@ -73,4 +101,3 @@ while True:
 socket_cliente.close()
 
 input("Pressione qualquer tecla para sair...")  # Espera usu�rio ler
-

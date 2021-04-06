@@ -152,7 +152,7 @@ def corpo(contexto):
     # IMPRIMIR OS BOTÕES NA TELA S1
     botao_avancar.draw(s1, (0, 0, 0))
     botao_voltar.draw(s1, (0, 0, 0))
-    botao_topo.draw(s4, (255, 255, 255))
+    #botao_topo.draw(s4, (255, 255, 255))
     # UPDATE TELA S1
     contexto.tela.blit(s1, (0, contexto.scroll_y))
     # UPDATE TELA S4

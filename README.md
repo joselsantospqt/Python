@@ -1,5 +1,4 @@
 # Instalação dos Projetos Python
-Material da disciplina em Python.
 
 1° instalar o Thonny
 https://thonny.org/

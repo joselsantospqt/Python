@@ -1,7 +1,7 @@
 # Instalação dos Projetos Python
 
 - Ola, este é um Projeto Gerenciador de tarefas.
-- Você vai encontrar um pouco do Framework "Pygame" que utilizo para criar uma interface e puro Python obtendo informações de Memoria, Processador, Rede , Diretório e outros mais. - Além de uma ferramenta para anexar páginas a um PDF e separar.
+- Você vai encontrar um pouco do Framework "Pygame" que utilizo para criar uma interface e Python para obter informações de Memoria, Processador, Rede , Diretório e outros mais. - Além de uma ferramenta para anexar páginas a um PDF e separar.
 
 
 ## 1° instalar o Thonny
